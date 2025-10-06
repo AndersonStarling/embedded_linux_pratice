@@ -5,6 +5,7 @@ This project showcases modular design, reusable components, and build automation
 
 ## 📁 Project Structure
 
+```
 01/
 ├── app/
 │ └── main.c # Application entry
@@ -16,9 +17,11 @@ This project showcases modular design, reusable components, and build automation
 │ └── main.c # Unit test for library
 ├── Makefile # Build automation
 └── readme.md # Project documentation
+```
 
 ## ⚙️ Build Targets
 
+```
 | Command | Description |
 |----------|--------------|
 | `make all` | Build both static and shared versions |
@@ -28,13 +31,13 @@ This project showcases modular design, reusable components, and build automation
 | `make run_shared_app` | Run the shared-linked application |
 | `make test_lib` | Build and run the unit test for library |
 | `make clean` | Clean all build artifacts |
-
----
+```
 
 ## 🏗️ Output Directory Structure
 
 After build, all outputs are stored in `output/`:
 
+```
 output/
 ├── app/
 │ ├── static_app/ # Static linked binary
@@ -46,8 +49,7 @@ output/
 │ ├── static/ # Object files for static build
 │ └── shared/ # Object files for shared build
 └── test/ # Unit test binary & objects
-
----
+```
 
 ## 🧠 Key Features
 - Separate build for **static** and **shared** libraries.  
