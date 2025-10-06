@@ -5,9 +5,11 @@ Each sub-project focuses on a specific embedded concept — from basic C library
 
 ## 📂 Repository Structure
 
+```
 embedded-linux-practice/
 ├── 01_build_static_shared_lib/     # Build static & shared library on Linux
 └── README.md
+```
 
 
 ## 🎯 Objective
