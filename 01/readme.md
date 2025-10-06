@@ -81,9 +81,9 @@ make test_lib
 
 ## 🧰 Toolchain
 
-Compiler: GCC
-OS: Linux / Ubuntu
-Build system: GNU Make
+- Compiler: GCC
+- OS: Linux / Ubuntu
+- Build system: GNU Make
 
 
 
