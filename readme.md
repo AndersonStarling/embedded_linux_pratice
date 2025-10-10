@@ -24,7 +24,7 @@ This repository is built as a learning roadmap for Embedded Linux engineers who 
 
 ## 🧰 Development Environment
 
-OS: Ubuntu 20.04 LTS
-Compiler: GCC / ARM-GCC
-Build Systems: Make, CMake, BitBake (Yocto)
-Boards: BeagleBone Black, Raspberry Pi
+- OS: Ubuntu 20.04 LTS
+- Compiler: GCC / ARM-GCC
+- Build Systems: Make, CMake, BitBake (Yocto)
+- Boards: BeagleBone Black, Raspberry Pi
