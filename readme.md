@@ -9,6 +9,7 @@ Each sub-project focuses on a specific embedded concept — from basic C library
 embedded-linux-practice/
 ├── 01        # Build static & shared library on Linux
 ├── 02        # Build file extract information app on Linux
+├── 03        # Pratice processes
 └── README.md
 ```
 
