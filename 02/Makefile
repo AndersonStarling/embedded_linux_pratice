@@ -13,8 +13,10 @@ all: create_output
 	@gcc -o ${OUTPUT_DIR}/filestat ${OUTPUT_DIR}/filestat.o
 
 run:
-	${OUTPUT_DIR}/filestat /home/ntai/Linux_Embedded/linux_course/embedded_linux_pratice/02/filestat.c
+	@echo "Running program"
+	@${OUTPUT_DIR}/filestat /home/ntai/Linux_Embedded/linux_course/embedded_linux_pratice/02/filestat.c
 
 clean:
-	rm -rf ${OUTPUT_DIR}
+	@echo "Cleaning ouput"
+	@rm -rf ${OUTPUT_DIR}
 
