@@ -10,6 +10,7 @@ embedded-linux-practice/
 ├── 01        # Build static & shared library on Linux
 ├── 02        # Build file extract information app on Linux
 ├── 03        # Pratice processes
+├── 04        # Pratice thread
 └── README.md
 ```
 
