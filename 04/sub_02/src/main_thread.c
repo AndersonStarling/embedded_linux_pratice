@@ -50,6 +50,7 @@ int main(void)
 {
     pthread_t thread_1_id; /**< Thread ID for thread 1. */
     pthread_t thread_2_id; /**< Thread ID for thread 2. */
+    pthread_t thread_3_id; /**< Thread ID for thread 3. */
     int ret;
 
     /* Create thread 1 */
@@ -66,9 +67,17 @@ int main(void)
         printf("thread 2 creation failed\n");
     }
 
+    /* Create thread 3 */
+    ret = pthread_create(&thread_3_id, NULL, thread_3_handler, NULL);
+    if (ret != 0)
+    {
+        printf("thread 2 creation failed\n");
+    }
+
     /* Wait for both threads to finish */
     pthread_join(thread_1_id, NULL);
     pthread_join(thread_2_id, NULL);
+    pthread_join(thread_3_id, NULL);
 
     return 0;
 }
