@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <pthread.h>
+#include <time.h>
 
 /**
  * @brief Thread handler function for **Thread 1**.
@@ -41,15 +42,20 @@
 void *thread_1_handler(void *args)
 {
     long long index = 0;
+    long long rand_val = 0;
     pthread_t tid = pthread_self(); /**< Retrieve the current thread ID. */
+
+    /* init random generator */
+    srand(time(NULL));
 
     printf("%s: Thread ID: %ld is running\n", __func__, tid);
 
-    /* increase share data to 1,000,000 - 1 */
+    /* generate random data and send to another thread */
     shared_data_lock();
-    for(index = 0; index < 1000000; index ++)
+    for(index = 0; index < 10; index ++)
     {
-        shared_data_update_val(index);
+        rand_val = rand();
+        shared_data_update_val(rand_val);
     }
     shared_data_unlock();
 
