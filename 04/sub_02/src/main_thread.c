@@ -25,6 +25,8 @@
 #include <pthread.h>
 #include "thread_1.h"
 #include "thread_2.h"
+#include "thread_3.h"
+#include "shared_data.h"
 
 /**
  * @brief Entry point of the multithreaded application.
