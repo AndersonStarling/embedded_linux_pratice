@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <pthread.h>
+#include "shared_data.h"
 
 /**
  * @brief Thread handler function for **Thread 1**.
@@ -38,19 +39,19 @@
  * pthread_create(&tid, NULL, thread_1_handler, NULL);
  * @endcode
  */
-void *thread_1_handler(void *args)
+void *thread_2_handler(void *args)
 {
     long long index = 0;
     pthread_t tid = pthread_self(); /**< Retrieve the current thread ID. */
 
     printf("%s: Thread ID: %ld is running\n", __func__, tid);
 
-    /* increase share data to 1,000,000 - 1 */
+    /* wake-up if another thread send wakeup signal */
     shared_data_lock();
-    for(index = 0; index < 1000000; index ++)
-    {
-        shared_data_update_val(index);
-    }
+    shared_data_wait_condition();
+    while(shared_data_get_ready_flag() == false){};
+    printf("%s: shared_data = %lld", __func__, shared_data_get_val());
+    shared_data_set_ready_flag();
     shared_data_unlock();
 
     pthread_exit(NULL); /**< Terminate the thread cleanly. */
