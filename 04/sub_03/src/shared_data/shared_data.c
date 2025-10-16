@@ -27,7 +27,7 @@ void shared_data_wait_condition(void)
 
 void shared_data_set_ready_flag(bool ready_flag)
 {
-     shared_data_ready = true;
+     shared_data_ready = ready_flag;
 }
 
 void shared_data_get_ready_flag(void)
