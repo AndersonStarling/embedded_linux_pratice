@@ -25,8 +25,6 @@
 #include <pthread.h>
 #include "thread_1.h"
 #include "thread_2.h"
-#include "thread_3.h"
-#include "shared_data.h"
 
 /**
  * @brief Entry point of the multithreaded application.
@@ -52,7 +50,6 @@ int main(void)
 {
     pthread_t thread_1_id; /**< Thread ID for thread 1. */
     pthread_t thread_2_id; /**< Thread ID for thread 2. */
-    pthread_t thread_3_id; /**< Thread ID for thread 3. */
     int ret;
 
     /* Create thread 1 */
