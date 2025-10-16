@@ -54,8 +54,13 @@ void *thread_1_handler(void *args)
     shared_data_lock();
     for(index = 0; index < 10; index ++)
     {
-        rand_val = rand();
-        shared_data_update_val(rand_val);
+        if(shared_data_get_ready_flag() == false)
+        {
+            rand_val = rand();
+            shared_data_update_val(rand_val);
+            shared_data_set_ready_flag(true);
+            shared_data_signal_condition();
+        }
     }
     shared_data_unlock();
 
