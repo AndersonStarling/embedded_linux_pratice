@@ -13,7 +13,7 @@ void shared_data_unlock(void)
     pthread_mutex_unlock(&lock);
 }
 
-void shared_data_update_val(uint64_t data)
+void shared_data_update_val(long long data)
 {
     shared_data = data;
 }
