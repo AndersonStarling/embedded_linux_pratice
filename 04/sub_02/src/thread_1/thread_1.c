@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <pthread.h>
+#include <shared_data.h>
 
 /**
  * @brief Thread handler function for **Thread 1**.
