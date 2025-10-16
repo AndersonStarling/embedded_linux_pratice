@@ -40,9 +40,18 @@
  */
 void *thread_1_handler(void *args)
 {
+    long long index = 0;
     pthread_t tid = pthread_self(); /**< Retrieve the current thread ID. */
 
     printf("%s: Thread ID: %ld is running\n", __func__, tid);
+
+    /* increase share data to 1,000,000 - 1 */
+    shared_data_lock();
+    for(index = 0; index < 1000000; index ++)
+    {
+        shared_data_update_val(index);
+    }
+    shared_data_unlock();
 
     pthread_exit(NULL); /**< Terminate the thread cleanly. */
 }
