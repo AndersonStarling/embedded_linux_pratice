@@ -14,6 +14,7 @@ void shared_data_unlock(void)
 {
     pthread_mutex_unlock(&lock);
 }
+
 void shared_data_signal_condition(void)
 {
      pthread_cond_signal(&condition);
