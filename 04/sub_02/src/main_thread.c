@@ -71,7 +71,7 @@ int main(void)
     ret = pthread_create(&thread_3_id, NULL, thread_3_handler, NULL);
     if (ret != 0)
     {
-        printf("thread 2 creation failed\n");
+        printf("thread 3 creation failed\n");
     }
 
     /* Wait for both threads to finish */
