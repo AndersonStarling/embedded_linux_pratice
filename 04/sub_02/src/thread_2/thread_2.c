@@ -50,7 +50,9 @@ void *thread_2_handler(void *args)
     shared_data_lock();
     for(index = 0; index < 1000000; index ++)
     {
-        shared_data_update_val(index);
+        counter = shared_data_get_val();
+        counter ++;
+        shared_data_update_val(counter);
     }
     shared_data_unlock();
 
