@@ -1,6 +1,7 @@
 #include <pthread.h>
 
-long long shared_data = 0;
+long long shared_data  = 0;
+bool shared_data_ready = false;
 pthread_mutex_t lock;
 
 void shared_data_lock(void)
@@ -11,6 +12,16 @@ void shared_data_lock(void)
 void shared_data_unlock(void)
 {
     pthread_mutex_unlock(&lock);
+}
+
+void shared_data_set_ready_flag(bool ready_flag)
+{
+     shared_data_ready = true;
+}
+
+void shared_data_get_ready_flag(void)
+{
+     return shared_data_ready;
 }
 
 void shared_data_update_val(uint64_t data)
