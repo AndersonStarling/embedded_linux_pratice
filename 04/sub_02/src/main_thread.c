@@ -81,5 +81,7 @@ int main(void)
     pthread_join(thread_2_id, NULL);
     pthread_join(thread_3_id, NULL);
 
+    printf("After finnish 3 thread, shared data = %lld\n", shared_data_get_val());
+
     return 0;
 }
