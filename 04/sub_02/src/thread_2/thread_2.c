@@ -42,6 +42,7 @@
 void *thread_2_handler(void *args)
 {
     long long index = 0;
+    long long counter = 0;
     pthread_t tid = pthread_self(); /**< Retrieve the current thread ID. */
 
     printf("%s: Thread ID: %ld is running\n", __func__, tid);
