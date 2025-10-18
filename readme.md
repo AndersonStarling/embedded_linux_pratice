@@ -11,6 +11,7 @@ embedded-linux-practice/
 ├── 02        # Build file extract information app on Linux
 ├── 03        # Pratice processes
 ├── 04        # Pratice thread
+├── 05        # Pratice IPC signal
 └── README.md
 ```
 
