@@ -1,21 +1,29 @@
 /**
  * @file main.c
- * @brief Multithreaded demo using POSIX threads.
+ * @brief Multithreaded demo using POSIX threads and read–write locks.
  *
- * This program demonstrates basic multithreading using the POSIX `pthread` API.
- * Two threads are created (`thread_1` and `thread_2`), each running its own
- * handler function defined in separate source files.
- *
- * The main thread waits for both threads to complete using `pthread_join()`.
+ * This program demonstrates concurrent read/write access to shared data
+ * protected by a **POSIX read–write lock (`pthread_rwlock_t`)**.
+ * Multiple reader threads read the same shared value, while multiple writer
+ * threads increment and update it safely.
  *
  * @details
- * The purpose of this program is to illustrate:
- *  - How to create threads with `pthread_create()`.
- *  - How to wait for threads to finish using `pthread_join()`.
- *  - How to organize thread code into separate modules for maintainability.
+ * The application structure:
+ *  - **Reader threads (`thread_reader_handler`)** continuously acquire
+ *    the read lock and print the shared value.
+ *  - **Writer threads (`thread_writer_handler`)** acquire the write lock
+ *    to increment the shared variable and release it afterward.
+ *  - The main thread creates and manages all worker threads, waiting for
+ *    them to complete using `pthread_join()`.
  *
- * @see thread_1.h
- * @see thread_2.h
+ * This example illustrates:
+ *  - How to use `pthread_rwlock_t` for safe concurrent read/write operations.
+ *  - How to create and manage multiple threads with `pthread_create()`.
+ *  - Modular organization of thread logic across multiple source files.
+ *
+ * @see thread_reader.h
+ * @see thread_writer.h
+ * @see shared_data.h
  *
  * @date 2025-10-06
  * @version 1.0
@@ -26,67 +34,75 @@
 #include "thread_reader.h"
 #include "thread_writer.h"
 
+/** @brief Number of reader threads to be created. */
 #define THREAD_READER_NUM 5u
+
+/** @brief Number of writer threads to be created. */
 #define THREAD_WRITER_NUM 2u
 
 /**
- * @brief Entry point of the multithreaded application.
+ * @brief Entry point of the multithreaded read–write demonstration program.
  *
- * This function creates two worker threads (`thread_1` and `thread_2`),
- * each executing a handler function. It then waits for both threads to
- * terminate before exiting the program.
+ * The function creates a pool of **reader threads** and **writer threads**,
+ * starts their execution, and waits for all of them to finish.
  *
  * @return
  *  - `0` on successful execution.
  *  - Non-zero if thread creation fails.
  *
  * @note
- * The handler functions `thread_1_handler()` and `thread_2_handler()` must be
- * implemented in their respective modules.
+ * The threads execute indefinitely. The program can be terminated manually
+ * (e.g., via `Ctrl + C`) or modified to include a stop condition.
  *
  * @code
- * gcc -o thread_demo main.c thread_1.c thread_2.c -lpthread
- * ./thread_demo
+ * gcc -o rw_demo main.c thread_reader.c thread_writer.c shared_data.c -lpthread
+ * ./rw_demo
  * @endcode
  */
-
 int main(void)
 {
-    pthread_t thread_reader[THREAD_READER_NUM];
-    pthread_t thread_writer[THREAD_WRITER_NUM];
+    pthread_t thread_reader[THREAD_READER_NUM]; /**< Array of reader thread IDs. */
+    pthread_t thread_writer[THREAD_WRITER_NUM]; /**< Array of writer thread IDs. */
 
-    int ret;
-    int thread_index = 0;
+    int ret;             /**< Return value for pthread function calls. */
+    int thread_index = 0; /**< Loop index for thread creation and joining. */
 
-    /* Start create 5 thread reader */
-    for(thread_index = 0; thread_index < THREAD_READER_NUM; thread_index ++)
+    /*-------------------------------------------------------------*/
+    /* Start creating reader threads                               */
+    /*-------------------------------------------------------------*/
+    for (thread_index = 0; thread_index < THREAD_READER_NUM; thread_index++)
     {
         ret = pthread_create(&thread_reader[thread_index], NULL, thread_reader_handler, NULL);
         if (ret != 0)
         {
-            printf("thread reader %d creation failed\n", thread_index + 1);
+            printf("Reader thread %d creation failed\n", thread_index + 1);
         }
     }
-    /* End create 5 thread reader */
 
-    /* Start create 2 thread writer */
-    for(thread_index = 0; thread_index < THREAD_WRITER_NUM; thread_index ++)
+    /*-------------------------------------------------------------*/
+    /* Start creating writer threads                               */
+    /*-------------------------------------------------------------*/
+    for (thread_index = 0; thread_index < THREAD_WRITER_NUM; thread_index++)
     {
         ret = pthread_create(&thread_writer[thread_index], NULL, thread_writer_handler, NULL);
         if (ret != 0)
         {
-            printf("thread writer %d creation failed\n", thread_index + 1);
+            printf("Writer thread %d creation failed\n", thread_index + 1);
         }
     }
-    /* End create 2 thread writer */
 
-    /* Wait for both threads to finish */
-    for(thread_index = 0; thread_index < THREAD_READER_NUM; thread_index ++)
+    /*-------------------------------------------------------------*/
+    /* Wait for all reader threads to finish                        */
+    /*-------------------------------------------------------------*/
+    for (thread_index = 0; thread_index < THREAD_READER_NUM; thread_index++)
     {
         pthread_join(thread_reader[thread_index], NULL);
     }
 
-    for(thread_index = 0; thread_index < THREAD_WRITER_NUM; thread_index ++)
+    /*-------------------------------------------------------------*/
+    /* Wait for all writer threads to finish                        */
+    /*-------------------------------------------------------------*/
+    for (thread_index = 0; thread_index < THREAD_WRITER_NUM; thread_index++)
     {
         pthread_join(thread_writer[thread_index], NULL);
     }

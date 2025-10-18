@@ -1,15 +1,21 @@
 /**
- * @file thread_1.c
- * @brief Implementation of the first worker thread.
+ * @file thread_writer.c
+ * @brief Implementation of the writer thread.
  *
- * This module defines the handler function for **Thread 1**, which prints
- * its own thread ID to demonstrate multithreaded execution.
+ * This module implements the **writer thread**, which periodically updates
+ * a shared variable protected by a POSIX read–write lock (`pthread_rwlock_t`).
  *
  * @details
- * The thread simply retrieves its thread identifier using `pthread_self()`,
- * displays it on the console, and then terminates using `pthread_exit()`.
+ * The writer thread demonstrates how to safely modify shared data
+ * in a multithreaded environment using a **write lock** to ensure
+ * exclusive access while updating.
  *
- * @see thread_1.h
+ * The thread continuously increments a shared counter and prints
+ * its value to the console. Synchronization is handled using
+ * functions defined in `shared_data.c`.
+ *
+ * @see thread_writer.h
+ * @see shared_data.h
  * @see main.c
  *
  * @date 2025-10-06
@@ -25,41 +31,46 @@
 #include "shared_data.h"
 
 /**
- * @brief Thread handler function for **Thread 1**.
+ * @brief Thread handler function for the **writer thread**.
  *
- * This function runs as a separate thread created by `pthread_create()`.
- * It retrieves its own thread ID and prints it to the console.
+ * This function is executed by a dedicated thread created via `pthread_create()`.
+ * It acquires a **write lock** before updating the shared variable to prevent
+ * concurrent access from reader threads, increments the shared value, and prints it.
  *
- * @param[in] args Unused thread argument (can be `NULL`).
+ * @param[in] args Optional thread argument (unused, may be `NULL`).
  *
- * @return Always returns `NULL` upon successful termination.
+ * @return Always returns `NULL` upon termination.
  *
  * @note
- * The thread terminates itself using `pthread_exit(NULL)`, which allows
- * other threads (like the main thread) to continue execution.
+ * - The thread runs indefinitely, updating shared data every 2 seconds.
+ * - The use of a write lock ensures thread-safe updates.
+ * - The thread can be externally cancelled or joined by the main thread.
  *
  * @code
- * pthread_t tid;
- * pthread_create(&tid, NULL, thread_1_handler, NULL);
+ * pthread_t writer_tid;
+ * pthread_create(&writer_tid, NULL, thread_writer_handler, NULL);
  * @endcode
  */
 void *thread_writer_handler(void *args)
 {
-    long long index = 0;
     long long val = 0;
     pthread_t tid = pthread_self(); /**< Retrieve the current thread ID. */
 
     printf("%s: Thread ID: %ld is running\n", __func__, tid);
 
-    for(;;)
+    for (;;)
     {
-        shared_data_lock_write();
-        val = shared_data_get_val();
-        val ++;
-        shared_data_update_val(val);
+        shared_data_lock_write(); /**< Acquire write lock for exclusive access. */
+
+        val = shared_data_get_val(); /**< Read current shared value. */
+        val++;                       /**< Increment shared value. */
+        shared_data_update_val(val); /**< Write updated value back. */
+
         printf("[WRITER] thread %ld %s: shared_data = %lld\n", tid, __func__, shared_data_get_val());
-        shared_data_unlock_read_write();
-        sleep(2);
+
+        shared_data_unlock_read_write(); /**< Release lock (both read/write). */
+
+        sleep(2); /**< Delay to simulate periodic updates. */
     }
 
     printf("thread %ld %s: exited\n", tid, __func__);

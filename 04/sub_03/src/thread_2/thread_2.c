@@ -1,15 +1,20 @@
 /**
- * @file thread_1.c
- * @brief Implementation of the first worker thread.
+ * @file thread_2.c
+ * @brief Implementation of the second worker thread.
  *
- * This module defines the handler function for **Thread 1**, which prints
- * its own thread ID to demonstrate multithreaded execution.
+ * This module defines the handler function for **Thread 2**, which waits for
+ * new data produced by **Thread 1** and processes (prints) it once available.
  *
  * @details
- * The thread simply retrieves its thread identifier using `pthread_self()`,
- * displays it on the console, and then terminates using `pthread_exit()`.
+ * Thread 2 uses condition variables and mutexes to synchronize access to
+ * shared data with Thread 1. It waits efficiently for a signal from Thread 1,
+ * reads the updated shared value, and resets the ready flag before continuing.
  *
- * @see thread_1.h
+ * The thread exits automatically when the shared “in-progress” flag is cleared,
+ * indicating that Thread 1 has finished producing data.
+ *
+ * @see thread_2.h
+ * @see shared_data.h
  * @see main.c
  *
  * @date 2025-10-06
@@ -22,22 +27,25 @@
 #include "shared_data.h"
 
 /**
- * @brief Thread handler function for **Thread 1**.
+ * @brief Thread handler function for **Thread 2**.
  *
- * This function runs as a separate thread created by `pthread_create()`.
- * It retrieves its own thread ID and prints it to the console.
+ * This function runs as a consumer thread created via `pthread_create()`.
+ * It waits for data availability signals from Thread 1, retrieves the shared
+ * data value, and prints it to the console.
  *
  * @param[in] args Unused thread argument (can be `NULL`).
  *
- * @return Always returns `NULL` upon successful termination.
+ * @return Always returns `NULL` when the thread terminates.
  *
  * @note
- * The thread terminates itself using `pthread_exit(NULL)`, which allows
- * other threads (like the main thread) to continue execution.
+ * - The thread waits on a condition variable until signaled by Thread 1.
+ * - When new data is ready, it prints the value and clears the ready flag.
+ * - When Thread 1 marks the process as finished (`in_progress = false`),
+ *   this thread exits gracefully using `pthread_exit(NULL)`.
  *
  * @code
  * pthread_t tid;
- * pthread_create(&tid, NULL, thread_1_handler, NULL);
+ * pthread_create(&tid, NULL, thread_2_handler, NULL);
  * @endcode
  */
 void *thread_2_handler(void *args)
@@ -47,21 +55,24 @@ void *thread_2_handler(void *args)
 
     printf("%s: Thread ID: %ld is running\n", __func__, tid);
 
-    /* wake-up if another thread send wakeup signal */
-    for(; shared_data_get_in_progress_flag() == true;)
+    /* Continuously wait for new data until the producer thread finishes. */
+    for (; shared_data_get_in_progress_flag() == true; )
     {
         shared_data_lock();
         shared_data_wait_condition();
-        while(shared_data_get_ready_flag() == false && \
-              shared_data_get_in_progress_flag() == true){};
 
-        if(shared_data_get_in_progress_flag() == true)
+        /* Wait until data is ready or the producer signals completion. */
+        while (shared_data_get_ready_flag() == false &&
+               shared_data_get_in_progress_flag() == true) {};
+
+        /* Process data if production is still active. */
+        if (shared_data_get_in_progress_flag() == true)
         {
             printf("%s: shared_data = %lld\n", __func__, shared_data_get_val());
             shared_data_set_ready_flag(false);
         }
-        shared_data_unlock();
 
+        shared_data_unlock();
     }
 
     printf("%s: exited\n", __func__);
