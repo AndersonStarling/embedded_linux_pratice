@@ -105,3 +105,9 @@ pthread_mutex_init()	Initializes a mutex variable.
 pthread_mutex_lock()	Locks the mutex (blocks if already locked).
 pthread_mutex_unlock()	Unlocks the mutex.
 pthread_mutex_destroy()	Destroys the mutex object when done.
+
+🚀 Future Enhancements
+- Measure execution time difference between with and without mutex.
+- Demonstrate deadlock scenarios and solutions.
+- Extend to semaphores or read-write locks for more complex synchronization.
+- Visualize thread scheduling using htop or top -H.
