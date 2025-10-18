@@ -17,6 +17,7 @@
  */
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <pthread.h>
 #include "shared_data.h"
 
@@ -47,12 +48,22 @@ void *thread_2_handler(void *args)
     printf("%s: Thread ID: %ld is running\n", __func__, tid);
 
     /* wake-up if another thread send wakeup signal */
-    shared_data_lock();
-    shared_data_wait_condition();
-    while(shared_data_get_ready_flag() == false){};
-    printf("%s: shared_data = %lld", __func__, shared_data_get_val());
-    shared_data_set_ready_flag();
-    shared_data_unlock();
+    for(; shared_data_get_in_progress_flag() == true;)
+    {
+        shared_data_lock();
+        shared_data_wait_condition();
+        while(shared_data_get_ready_flag() == false && \
+              shared_data_get_in_progress_flag() == true){};
 
+        if(shared_data_get_in_progress_flag() == true)
+        {
+            printf("%s: shared_data = %lld\n", __func__, shared_data_get_val());
+            shared_data_set_ready_flag(false);
+        }
+        shared_data_unlock();
+
+    }
+
+    printf("%s: exited\n", __func__);
     pthread_exit(NULL); /**< Terminate the thread cleanly. */
 }

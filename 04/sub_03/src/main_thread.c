@@ -52,18 +52,18 @@ int main(void)
     pthread_t thread_2_id; /**< Thread ID for thread 2. */
     int ret;
 
-    /* Create thread 1 */
-    ret = pthread_create(&thread_1_id, NULL, thread_1_handler, NULL);
-    if (ret != 0)
-    {
-        printf("thread 1 creation failed\n");
-    }
-
     /* Create thread 2 */
     ret = pthread_create(&thread_2_id, NULL, thread_2_handler, NULL);
     if (ret != 0)
     {
         printf("thread 2 creation failed\n");
+    }
+
+    /* Create thread 1 */
+    ret = pthread_create(&thread_1_id, NULL, thread_1_handler, NULL);
+    if (ret != 0)
+    {
+        printf("thread 1 creation failed\n");
     }
 
     /* Wait for both threads to finish */

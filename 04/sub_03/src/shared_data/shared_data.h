@@ -11,7 +11,11 @@ void shared_data_wait_condition(void);
 
 void shared_data_set_ready_flag(bool ready_flag);
 
-void shared_data_get_ready_flag(void);
+bool shared_data_get_ready_flag(void);
+
+void shared_data_set_in_progress_flag(bool in_progress);
+
+bool shared_data_get_in_progress_flag(void);
 
 void shared_data_update_val(long long data);
 

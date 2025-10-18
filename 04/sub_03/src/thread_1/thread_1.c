@@ -17,8 +17,12 @@
  */
 
 #include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
 #include <pthread.h>
+#include <unistd.h>
 #include <time.h>
+#include "shared_data.h"
 
 /**
  * @brief Thread handler function for **Thread 1**.
@@ -50,19 +54,32 @@ void *thread_1_handler(void *args)
 
     printf("%s: Thread ID: %ld is running\n", __func__, tid);
 
-    /* generate random data and send to another thread */
     shared_data_lock();
-    for(index = 0; index < 10; index ++)
-    {
-        if(shared_data_get_ready_flag() == false)
-        {
-            rand_val = rand();
-            shared_data_update_val(rand_val);
-            shared_data_set_ready_flag(true);
-            shared_data_signal_condition();
-        }
-    }
+    shared_data_set_in_progress_flag(true);
     shared_data_unlock();
 
+    /* generate random data and send to another thread */
+    for(index = 0; index < 10; index ++)
+    {
+        while(shared_data_get_ready_flag() == true){};
+
+        rand_val = rand();
+        shared_data_lock();
+        shared_data_update_val(rand_val);
+        shared_data_set_ready_flag(true);
+        shared_data_signal_condition();
+        shared_data_unlock();
+
+        sleep(1);
+    }
+
+    shared_data_lock();
+    shared_data_set_in_progress_flag(false);
+    shared_data_signal_condition();
+    shared_data_unlock();
+
+    sleep(1);
+
+    printf("%s: exited\n", __func__);
     pthread_exit(NULL); /**< Terminate the thread cleanly. */
 }
