@@ -21,18 +21,18 @@ A **parent process** and a **child process** communicate with each other via **S
 
 ```
 sub_03/
-├── output/ # Compiled binaries
+├── output/              # Compiled binaries
 ├── src/
 │ ├── child_process/
-│ │ ├── child_process.c # Child process implementation
+│ │ ├── child_process.c  # Child process implementation
 │ │ └── child_process.h
 │ ├── parent_process/
 │ │ ├── parent_process.c # Parent process implementation
 │ │ └── parent_process.h
-│ └── process.c # Entry point: creates fork and manages logic
+│ └── process.c          # Entry point: creates fork and manages logic
 ├── .gitignore
-├── Makefile # Build automation
-└── README.md # Project documentation
+├── Makefile             # Build automation
+└── README.md            # Project documentation
 ```
 
 ## 🧠 Program Overview
