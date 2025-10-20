@@ -1,86 +1,91 @@
-# 🧠 Linux Signal Handling – SIGINT (Ctrl + C) Demo
+# ⏳ Poll-based Input and Signal Handling in Linux
 
-This project demonstrates how to **catch and handle signals in Linux**, specifically the **`SIGINT`** signal, which is sent when the user presses **Ctrl + C** in the terminal.  
-The program prints a message each time it receives the signal and automatically terminates after three occurrences.
+This project demonstrates how to **handle user input** and **system signals** simultaneously in a single process using the `poll()` system call.  
+It effectively combines **asynchronous signal handling** (`SIGINT`, `SIGTERM`) with **non-blocking user input** monitoring from the keyboard.
 
 ---
 
 ## 🎯 Objective
 
-- Understand **how signal handling works** in Linux.
-- Learn how to use the **`signal()`** function to register a custom handler.
-- Observe how a process can **control its termination** in response to user input.
+The goal of this exercise is to write a C program that:
+1. Waits for **keyboard input** (stdin) without blocking signal handling.
+2. Responds to **SIGINT** (Ctrl + C) by printing `"SIGINT received."`.
+3. Exits cleanly when receiving **SIGTERM**.
+4. Prints user-entered input immediately after pressing **Enter**.
 
----
+This demonstrates how to use **I/O multiplexing** (`poll()`) and **signal handling** together in one process.
 
-## 🧩 Key Features
-
-- Registers a custom signal handler for `SIGINT` using `signal()`.
-- Uses a global counter to track how many times the signal is received.
-- Prints a message on each interrupt (`Ctrl + C`).
-- Terminates gracefully after the **third** signal.
-
-## 📁 Project Structure
-
+## 🧩 Project Structure
 ```
-sub_01/
+sub_04/
+├── output/   # Compiled binaries
 ├── src/
-│ └── sigint.c # Source file demonstrating SIGINT handling
-├── Makefile # Optional: for build automation
+│ └── poll.c  # Source code implementing signal + poll handling
+├── .gitignore
+├── Makefile  # Build and run automation
 └── README.md # Project documentation
 ```
 
-## 💡 Example session:
+## 🧠 Program Description
+### 🔸 Overview
+
+This program uses:
+
+poll() to monitor keyboard input (stdin).
+
+signal() to catch asynchronous signals (SIGINT, SIGTERM).
+
+A finite state machine (FSM) to manage program behavior.
+
+### 🔸 Program Flow
+
+The main process initializes a pollfd structure to monitor STDIN_FILENO for input events.
+
+When the user types text and presses Enter, the program reads and echoes the input.
+
+If the user presses Ctrl + C, a SIGINT signal is raised:
+
+The signal handler updates the state to STATE_RECV_SIGINT.
+
+The main loop prints "SIGINT received.".
+
+If SIGTERM is sent (e.g., via kill -15 <pid>), the program exits gracefully.
+
+## 🧩 Finite State Machine (FSM)
 
 ```
-$ ./sigint
+State	Description
+STATE_POLL_READ_STDIN	Waiting for user input using poll().
+STATE_WRITE_STDOUT	Write received input back to console.
+STATE_RECV_SIGINT	Signal handler triggered (Ctrl + C).
+```
+
+## 💡 Key Functions
+
+```
+Function	Description
+poll()	Waits for events on file descriptors (in this case, stdin).
+signal()	Registers a custom handler for SIGINT and SIGTERM.
+read() / write()	Used for non-buffered I/O with the terminal.
+```
+
+## 🧾 Example Execution
+### ✅ Normal Run
+
+```
+$ ./output/poll
 process is running
+hello world
+hello world
+this is a test
+this is a test
+```
+
+### ✅ Handling SIGINT (Ctrl + C)
+
+```
 ^C
-received SIGINT
+SIGINT received
 ^C
-received SIGINT
-^C
-received SIGINT
-process ended
+SIGINT received
 ```
-
-The program runs continuously until you press Ctrl + C three times.
-
-## 🧠 How It Works
-### 🧩 Step 1 — Register signal handler
-
-```
-signal(SIGINT, &sigint_handler);
-```
-
-This line tells the operating system to call your custom function (sigint_handler) whenever the process receives a SIGINT signal.
-
-### 🧩 Step 2 — Implement the handler
-
-```
-void sigint_handler(int param)
-{
-    count_sigint++;
-    printf("received SIGINT\n");
-}
-```
-
-Each time you press Ctrl + C, this function is triggered, printing a message and incrementing the counter.
-
-### 🧩 Step 3 — Main loop
-
-```
-for (; count_sigint < 3;)
-{
-    /* Idle loop until 3 SIGINT signals have been received */
-}
-```
-
-The program keeps running until it has received 3 interrupts.
-
-## 🚀 Possible Extensions
-
-- Handle multiple signal types (SIGTERM, SIGQUIT, SIGHUP).
-- Combine with file I/O to log signal events.
-- Implement graceful shutdown logic for long-running daemons.
-- Experiment with sigaction() (modern replacement for signal()).

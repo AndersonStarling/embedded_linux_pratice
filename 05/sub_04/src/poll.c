@@ -37,6 +37,15 @@
 #include <signal.h>
 #include <poll.h>
 
+typedef enum
+{
+    STATE_RECV_SIGINT,
+    STATE_POLL_READ_STDIN,
+    STATE_WRITE_STDOUT,
+} state_enum_t;
+
+state_enum_t state = STATE_POLL_READ_STDIN;
+
 /**
  * @brief Handles the `SIGINT` (Ctrl + C) signal.
  *
@@ -52,7 +61,7 @@
  */
 void sigint_handler(int param)
 {
-    printf("SIGINT received\n");
+    state = STATE_RECV_SIGINT;
 }
 
 /**
@@ -76,6 +85,7 @@ int main(void)
 
     int ret = -1;
     char rev_buffer[100] = {0};
+    ssize_t read_bytes = 0;
 
     printf("process is running\n");
 
@@ -83,19 +93,33 @@ int main(void)
 
     for (;;)
     {
-        ret = poll(fd, 1, -1);
-
-        if(ret < 0)
+        switch(state)
         {
-            printf("poll failed\n");
-        }
-        else if(ret > 0)
-        {
-            if(fd[0].revents & POLLIN)
-            {
-                read(STDIN_FILENO, &rev_buffer[0], sizeof(&rev_buffer[0]));
-                printf("%s", &rev_buffer[0]);
-            }
+            case STATE_POLL_READ_STDIN:
+                ret = poll(fd, 1, -1);
+                if(ret < 0)
+                {
+                    printf("poll failed\n");
+                }
+                else if(ret > 0)
+                {
+                    if(fd[0].revents & POLLIN)
+                    {
+                        read_bytes = read(STDIN_FILENO, &rev_buffer[0], 100);
+                        state = STATE_WRITE_STDOUT;
+                    }
+                }
+                break;
+            case STATE_WRITE_STDOUT:
+                write(STDOUT_FILENO, &rev_buffer[0], read_bytes);
+                state = STATE_POLL_READ_STDIN;
+                break;
+            case STATE_RECV_SIGINT:
+                printf("SIGINT received\n");
+                state = STATE_POLL_READ_STDIN;
+                break;
+            default:
+                break;
         }
     }
 
