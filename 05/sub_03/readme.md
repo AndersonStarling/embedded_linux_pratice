@@ -43,8 +43,8 @@ Every time the alarm triggers, it sends SIGUSR1 to the child process.
 Waits for the child to respond with SIGUSR1 back.
 After 5 successful interactions, sends SIGUSR2 to terminate the child.
 
-```
 Finite State Machine (FSM)
+```
 State	Description
 STATE_IDLE	Waiting for events.
 STATE_SEND_SIGUSR1_ACTIVE_CHILD	Send signal SIGUSR1 to child.
