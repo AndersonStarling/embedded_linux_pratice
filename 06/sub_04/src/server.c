@@ -33,6 +33,8 @@ typedef struct
 {
     struct sockaddr_un socket_address;
     struct sockaddr_un client_address;
+    char * socket_path;
+    char * client_path;
 } bind_socket_struct_t;
 
 
@@ -54,6 +56,9 @@ socket_struct_t create_socket_data =
 bind_socket_struct_t bind_socket_data = 
 {
     .socket_address.sun_family = AF_UNIX,
+    .socket_path = "/tmp/server.sock",
+    .client_address.sun_family = AF_UNIX,
+    .client_path = "/tmp/client.sock",
 };
 
 function_sequence sequence[] = 
@@ -89,6 +94,8 @@ static void create_socket(void * args)
 {
     int ret;
 
+    printf("%s\n", __func__);
+
     socket_struct_t * socket_data = (socket_struct_t *)args;
 
     common_data.socket_fd = socket(socket_data->domain, socket_data->type, socket_data->protocol);
@@ -102,6 +109,13 @@ static void bind_socket(void * args)
 {
     bind_socket_struct_t * bind_socket_data = (bind_socket_struct_t *)args;
     int ret;
+
+    printf("%s\n", __func__);
+
+    unlink(bind_socket_data->socket_path);
+
+    /* configure client path */
+    strncpy(bind_socket_data->socket_address.sun_path, bind_socket_data->socket_path, sizeof(bind_socket_data->socket_address.sun_path) - 1);
 
     ret = bind(common_data.socket_fd,                                      \
                (const struct sockaddr *)&bind_socket_data->socket_address, \
@@ -123,10 +137,12 @@ static void receive_from_socket(void * args)
     socklen_t client_address_len = sizeof(bind_socket_data.client_address);
     common_data.rx_byte_len = recvfrom(common_data.socket_fd,                               \
                                        &common_data.rx_buffer[0],                           \
-                                       sizeof(&common_data.rx_buffer[0]),                   \
+                                       sizeof(common_data.rx_buffer),                       \
                                        0,                                                   \
                                        (struct sockaddr *)&bind_socket_data.client_address, \
                                        &client_address_len);
+    
+    printf("%s: %s", __func__, &common_data.rx_buffer[0]);
 }
 
 static void send_to_socket(void * args)
@@ -146,6 +162,7 @@ static void send_to_socket(void * args)
 
 static void close_socket(void * args)
 {
+    printf("%s\n", __func__);
     (void)args;
     close(common_data.socket_fd);
 }
