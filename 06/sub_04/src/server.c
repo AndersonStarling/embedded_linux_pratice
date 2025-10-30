@@ -20,7 +20,7 @@ typedef struct
     ssize_t rx_byte_len;
     ssize_t tx_byte_len;
     char rx_buffer[1024];
-} common_struct_t;
+} socket_runtime_struct_t;
 
 typedef struct
 {
@@ -45,7 +45,7 @@ static bool receive_from_socket(void * args);
 static bool send_to_socket(void * args);
 static bool close_socket(void * args);
 
-common_struct_t common_data;
+socket_runtime_struct_t common_data;
 
 socket_struct_t create_socket_data = 
 {
