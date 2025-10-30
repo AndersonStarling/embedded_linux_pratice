@@ -1,11 +1,12 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <errno.h>
 
-typedef void (*function_handler)(void *);
+typedef bool (*function_handler)(void *);
 
 typedef struct
 {
@@ -38,11 +39,11 @@ typedef struct
 } bind_socket_struct_t;
 
 
-static void create_socket(void * args);
-static void bind_socket(void * args);
-static void receive_from_socket(void * args);
-static void send_to_socket(void * args);
-static void close_socket(void * args);
+static bool create_socket(void * args);
+static bool bind_socket(void * args);
+static bool receive_from_socket(void * args);
+static bool send_to_socket(void * args);
+static bool close_socket(void * args);
 
 common_struct_t common_data;
 
@@ -90,47 +91,58 @@ function_sequence sequence[] =
     }
 };
 
-static void create_socket(void * args)
+static bool create_socket(void * args)
 {
-    int ret;
+    bool ret_val = false;
 
     printf("%s\n", __func__);
 
     socket_struct_t * socket_data = (socket_struct_t *)args;
 
     common_data.socket_fd = socket(socket_data->domain, socket_data->type, socket_data->protocol);
+
+    ret_val = (common_data.socket_fd > 0);
+
     if(common_data.socket_fd < 0)
     {
         printf("%s failed\n", __func__);
     }
+
+    return ret_val;
 }
 
-static void bind_socket(void * args)
+static bool bind_socket(void * args)
 {
     bind_socket_struct_t * bind_socket_data = (bind_socket_struct_t *)args;
     int ret;
+    bool ret_val = false;
 
     printf("%s\n", __func__);
 
     unlink(bind_socket_data->socket_path);
 
-    /* configure client path */
+    /* configure server path */
     strncpy(bind_socket_data->socket_address.sun_path, bind_socket_data->socket_path, sizeof(bind_socket_data->socket_address.sun_path) - 1);
 
     ret = bind(common_data.socket_fd,                                      \
                (const struct sockaddr *)&bind_socket_data->socket_address, \
                sizeof(bind_socket_data->socket_address));
 
+    ret_val = (ret == 0);
+
     if(ret != 0)
     {
         printf("ret = %d\n", ret);
         printf("%s failed\n", __func__);
-    }    
+    }
+
+    return ret_val;
 }
 
-static void receive_from_socket(void * args)
+static bool receive_from_socket(void * args)
 {
     (void)args;
+    bool ret_val = false;
 
     printf("%s\n", __func__);
 
@@ -141,13 +153,18 @@ static void receive_from_socket(void * args)
                                        0,                                                   \
                                        (struct sockaddr *)&bind_socket_data.client_address, \
                                        &client_address_len);
-    
+
     printf("%s: %s", __func__, &common_data.rx_buffer[0]);
+
+    ret_val = (common_data.rx_byte_len > 0);
+
+    return ret_val;
 }
 
-static void send_to_socket(void * args)
+static bool send_to_socket(void * args)
 {
     (void)args;
+    bool ret_val = false;
 
     printf("%s\n", __func__);
 
@@ -158,13 +175,19 @@ static void send_to_socket(void * args)
                                      0,                                                   \
                                      (struct sockaddr *)&bind_socket_data.client_address, \
                                      client_address_len);
+                                    
+    ret_val = (common_data.tx_byte_len > 0);
+
+    return ret_val;
 }
 
-static void close_socket(void * args)
+static bool close_socket(void * args)
 {
     printf("%s\n", __func__);
     (void)args;
     close(common_data.socket_fd);
+
+    return true;
 }
 
 
@@ -174,7 +197,12 @@ int main(void)
 
     for(index = 0; index < sizeof(sequence)/sizeof(function_sequence); index ++)
     {
-        sequence[index].function(sequence[index].args);
+        if(sequence[index].function(sequence[index].args) == false)
+        {
+            /* call last function in case any function failed */
+            sequence[sizeof(sequence)/sizeof(function_sequence) - 1].function(sequence[sizeof(sequence)/sizeof(function_sequence) - 1].args);
+            return -1;
+        }
     }
 
     return 0;
