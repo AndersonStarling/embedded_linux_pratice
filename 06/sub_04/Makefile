@@ -14,6 +14,10 @@ all:
 clean:
 	rm -rf ${OUTPUT_DIR}
 
-run:
+run_server:
 	@echo "Running program"
 	@${OUTPUT_DIR}/server
+
+run_client:
+	@echo "Running program"
+	@${OUTPUT_DIR}/client
