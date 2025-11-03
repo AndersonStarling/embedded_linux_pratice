@@ -32,11 +32,10 @@ typedef struct
 
 typedef struct 
 {
-    struct sockaddr_in socket_address;
+    struct sockaddr_in server_address;
     struct sockaddr_in client_address;
     int server_port;
 } bind_socket_struct_t;
-
 
 static bool create_socket(void * args);
 static bool bind_socket(void * args);
@@ -55,10 +54,9 @@ socket_struct_t create_socket_data =
 
 bind_socket_struct_t bind_socket_data = 
 {
-    .socket_address.sin_family = AF_INET,
-    .socket_address.sin_addr.s_addr = INADDR_ANY,
+    .server_address.sin_family = AF_INET,
+    .server_address.sin_addr.s_addr = INADDR_ANY,
     .server_port = 8080,
-    .client_address.sin_family = AF_INET,
 };
 
 function_sequence sequence[] = 
@@ -119,11 +117,11 @@ static bool bind_socket(void * args)
     printf("%s\n", __func__);
 
     /* configure server port */
-    bind_socket_data->socket_address.sin_port = htons(bind_socket_data->server_port);
+    bind_socket_data->server_address.sin_port = htons(bind_socket_data->server_port);
 
     ret = bind(common_data.socket_fd,                                      \
-               (const struct sockaddr *)&bind_socket_data->socket_address, \
-               sizeof(bind_socket_data->socket_address));
+               (const struct sockaddr *)&bind_socket_data->server_address, \
+               sizeof(bind_socket_data->server_address));
 
     ret_val = (ret == 0);
 
