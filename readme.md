@@ -12,6 +12,7 @@ embedded-linux-practice/
 ├── 03        # Pratice processes
 ├── 04        # Pratice thread
 ├── 05        # Pratice IPC signal
+├── 06        # Pratice IPC socket
 └── README.md
 ```
 
