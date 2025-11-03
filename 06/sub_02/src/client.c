@@ -33,9 +33,9 @@ typedef struct
 
 typedef struct
 {
-    struct sockaddr_in socket_address;
     struct sockaddr_in server_address;
     char * server_ip;
+    int    server_port;
 } bind_socket_struct_t;
 
 
@@ -56,8 +56,9 @@ socket_struct_t create_socket_data =
 
 bind_socket_struct_t bind_socket_data = 
 {
-    .socket_address.sun_family = AF_INET,
-    .server_address.sun_family = AF_INET,
+    .server_address.sin_family = AF_INET,
+    .server_ip                 = "127.0.0.1",
+    .server_port               = 8080
 };
 
 function_sequence sequence[] = 
@@ -118,21 +119,10 @@ static bool bind_socket(void * args)
     printf("%s\n", __func__);
 
     /* configure client path */
-    bind_socket_data->socket_address.sin_port = htons(0);
+    bind_socket_data->server_address.sin_port = htons(bind_socket_data->server_port);
+    bind_socket_data->server_address.sin_addr.s_addr = inet_addr(bind_socket_data->server_ip);
 
-    ret = bind(common_data.socket_fd,                                      \
-               (const struct sockaddr *)&bind_socket_data->socket_address, \
-               sizeof(bind_socket_data->socket_address));
-
-    ret_val = (ret == 0);
-
-    if(ret != 0)
-    {
-        printf("ret = %d\n", ret);
-        printf("%s failed\n", __func__);
-    }
-
-    return ret_val; 
+    return true; 
 }
 
 static bool receive_from_socket(void * args)
@@ -142,12 +132,13 @@ static bool receive_from_socket(void * args)
 
     printf("%s\n", __func__);
 
-    common_data.rx_byte_len = recvfrom(common_data.socket_fd,             \
-                                       &common_data.rx_buffer[0],         \
-                                       sizeof(common_data.rx_buffer),     \
-                                       0,                                 \
-                                       NULL,                              \
-                                       NULL);
+    socklen_t server_address_len = sizeof(bind_socket_data.server_address);
+    common_data.rx_byte_len = recvfrom(common_data.socket_fd,                               \
+                                       &common_data.rx_buffer[0],                           \
+                                       sizeof(common_data.rx_buffer),                       \
+                                       0,                                                   \
+                                       (struct sockaddr *)&bind_socket_data.server_address, \
+                                       &server_address_len);
 
     printf("%s: %s", __func__, &common_data.rx_buffer[0]);
 
