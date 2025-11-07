@@ -16,7 +16,7 @@ typedef struct
 
 static bool create_socket(void);
 static bool bind_socket(char * source_address, char * target_address, int address_len);
-static bool accept_connect_socket(struct sockaddr_storage * client_address);
+static bool accept_connect_socket(char * client_address);
 static bool listen_from_socket(int back_log);
 static bool receive_from_socket(char * rx_buffer, int buffer_len);
 static bool send_to_socket(char * tx_buffer, int buffer_len);
@@ -113,7 +113,7 @@ static bool send_to_socket(char * tx_buffer, int buffer_len)
     return ret_val;
 }
 
-static bool accept_connect_socket(struct sockaddr_storage * client_address)
+static bool accept_connect_socket(char * client_address)
 {
     bind_socket_struct_t * bind_socket_data = (bind_socket_struct_t *)args;
     bool ret_val = false;
