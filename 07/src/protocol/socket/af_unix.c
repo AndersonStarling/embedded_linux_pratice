@@ -24,7 +24,7 @@ static bool close_socket(void);
 
 socket_runtime_struct_t common_data;
 
-protocol_interface_struct_t get_ops(void)
+protocol_interface_struct_t unix_get_ops(void)
 {
     static protocol_interface_struct_t ops = 
     {
