@@ -3,14 +3,13 @@
 
 typedef struct
 {
-    void (*create)(void);
-    void (*bind)(void);
-    void (*listen)(void);
-    void (*connect)(void);
-    void (*accept)(void);
-    void (*send)(void);
-    void (*recv)(void);
-    void (*close)(void);
+    bool (*create)(void);
+    bool (*close)(void);
+    bool (*listen)(int back_log);
+    bool (*accept)(char * client_address);
+    bool (*bind)(char * source_address, char * target_address, int address_len);
+    bool (*send)(char * tx_buffer, int buffer_len);
+    bool (*recv)(char * rx_buffer, int buffer_len);
 } protocol_interface_struct_t;
 
 #endif /* PROTOCOL_IFACE_H */
