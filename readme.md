@@ -13,7 +13,9 @@ embedded-linux-practice/
 ├── 04        # Pratice thread
 ├── 05        # Pratice IPC signal
 ├── 06        # Pratice IPC socket
+├── 07        # Pratice IPC queue
 ├── 08        # Pratice IPC pipe
+├── 09        # Pratice IPC share mem
 └── README.md
 ```
 
