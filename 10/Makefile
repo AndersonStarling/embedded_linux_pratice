@@ -7,11 +7,11 @@ all:
 	@echo "Building source file"
 	@mkdir -p ${OUTPUT_DIR}
 	@gcc -c src/consumer/consumer.c -o ${OUTPUT_DIR}/consumer.o -Isrc/
-	@gcc -o ${OUTPUT_DIR}/consumer ${OUTPUT_DIR}/consumer.o
+	@gcc -o ${OUTPUT_DIR}/consumer ${OUTPUT_DIR}/consumer.o -lrt -pthread
 	@gcc -c src/producer/producer.c -o ${OUTPUT_DIR}/producer.o -Isrc/
-	@gcc -o ${OUTPUT_DIR}/producer ${OUTPUT_DIR}/producer.o
+	@gcc -o ${OUTPUT_DIR}/producer ${OUTPUT_DIR}/producer.o -lrt -pthread
 	@gcc -c src/process/process.c -o ${OUTPUT_DIR}/process.o -Isrc/
-	@gcc -o ${OUTPUT_DIR}/process ${OUTPUT_DIR}/process.o
+	@gcc -o ${OUTPUT_DIR}/process ${OUTPUT_DIR}/process.o -lrt -pthread
 
 clean:
 	rm -rf ${OUTPUT_DIR}

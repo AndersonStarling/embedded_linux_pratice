@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <time.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <semaphore.h>
 #include "interface.h"
 
 typedef enum
@@ -36,7 +38,8 @@ int main(int argc, char * argv[])
     bool loop = true;
     int index = 0;
     int random_time = 0;
-
+    sem_t *sem_vegan = NULL;
+    sem_t *sem_non_vegan = NULL;
 
     for(; loop == true;)
     switch(state)
@@ -52,11 +55,19 @@ int main(int argc, char * argv[])
             {
                 case CUSTOMER_VEGAN_FOOD_ENUM:
                     fd_vegan = open(SHM_FILE_VEGAN_FOOD_SHARED, O_RDWR);
+
                     if(fd_vegan < 0)
                     {
                         perror("open");
                         state = RELEASE;
                     }
+
+                    sem_vegan = sem_open("./vegan_sem", O_CREAT, 0);
+                    if(sem_vegan == SEM_FAILED)
+                    {
+                        perror("sem_open");
+                    }
+
                     shared_mem_ptr_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_vegan, 0);
                     if(MAP_FAILED == shared_mem_ptr_vegan)
                     {
@@ -65,6 +76,7 @@ int main(int argc, char * argv[])
                     }
                     break;
                 case CUSTOMER_NON_VEGAN_FOOD_ENUM:
+
                     shared_mem_ptr_non_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_non_vegan, 0);
                     fd_non_vegan = open(SHM_FILE_NON_VEGAN_FOOD_SHARED, O_RDWR);
                     if(fd_non_vegan < 0)
@@ -72,6 +84,13 @@ int main(int argc, char * argv[])
                         perror("open");
                         state = RELEASE;
                     }
+
+                    sem_non_vegan = sem_open("./non_vegan_sem", 0);
+                    if(sem_non_vegan == SEM_FAILED)
+                    {
+                        perror("sem_open");
+                    }
+
                     break;
                 case CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD_ENUM:
                     fd_vegan = open(SHM_FILE_VEGAN_FOOD_SHARED, O_RDWR);
@@ -100,6 +119,18 @@ int main(int argc, char * argv[])
                         perror("mmap");
                         state = RELEASE;
                     }
+
+                    sem_vegan = sem_open("./vegan_sem", 0);
+                    if(sem_vegan == SEM_FAILED)
+                    {
+                        perror("sem_open");
+                    }
+
+                    sem_non_vegan = sem_open("./non_vegan_sem", 0);
+                    if(sem_non_vegan == SEM_FAILED)
+                    {
+                        perror("sem_open");
+                    }
                     break;
                 default:
                     break;
@@ -119,6 +150,7 @@ int main(int argc, char * argv[])
             {
                 case CUSTOMER_VEGAN_FOOD_ENUM:
                     /* take the food */
+                    sem_wait(sem_vegan);
                     for(index = 0; index < SHM_FILE_SIZE; index ++)
                     {
                         if(shared_mem_ptr_vegan[index] != 0)
@@ -127,11 +159,14 @@ int main(int argc, char * argv[])
                             break;
                         }
                     }
+                    sem_post(sem_vegan);
 
                     sleep(random_time);
 
                     break;
                 case CUSTOMER_NON_VEGAN_FOOD_ENUM:
+                    /* take the food */
+                    sem_wait(sem_non_vegan);
                     for(index = 0; index < SHM_FILE_SIZE; index ++)
                     {
                         if(shared_mem_ptr_non_vegan[index] != 0)
@@ -140,12 +175,14 @@ int main(int argc, char * argv[])
                             break;
                         }
                     }
+                    sem_post(sem_non_vegan);
 
                     sleep(random_time);
 
                     break;
                 case CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD_ENUM:
                     /* take the food */
+                    sem_wait(sem_vegan);
                     for(index = 0; index < SHM_FILE_SIZE; index ++)
                     {
                         if(shared_mem_ptr_vegan[index] != 0)
@@ -154,7 +191,9 @@ int main(int argc, char * argv[])
                             break;
                         }
                     }
+                    sem_post(sem_vegan);
 
+                    sem_wait(sem_non_vegan);
                     for(index = 0; index < SHM_FILE_SIZE; index ++)
                     {
                         if(shared_mem_ptr_non_vegan[index] != 0)
@@ -163,6 +202,7 @@ int main(int argc, char * argv[])
                             break;
                         }
                     }
+                    sem_post(sem_non_vegan);
 
                     sleep(random_time);
                     break;

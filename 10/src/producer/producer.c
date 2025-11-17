@@ -7,6 +7,9 @@
 #include <unistd.h>
 #include <time.h>
 #include <string.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <semaphore.h>
 #include "interface.h"
 
 typedef enum
@@ -28,6 +31,7 @@ int main(int argc, char * argv[])
     int index = 0;
     char food = 0;
     int random_time = 0;
+    sem_t *sem = NULL;
 
     for(; loop == true;)
     {
@@ -65,6 +69,21 @@ int main(int argc, char * argv[])
                     state = RELEASE;
                 }
 
+                if(strcmp(argv[1], SHM_FILE_VEGAN_FOOD_SHARED) == 0)
+                {
+                    sem = sem_open("./vegan_sem", O_CREAT, 0666, 0);
+                }
+                else
+                {
+                    sem = sem_open("./non_vegan_sem", O_CREAT, 0666, 0);
+                }
+
+                if(sem == SEM_FAILED)
+                {
+                    perror("sem_open");
+                }
+
+
                 state = PROCESSCING;
                 break;
             case PROCESSCING:
@@ -83,10 +102,18 @@ int main(int argc, char * argv[])
 
                 random_time = (rand() % 5) + 1;
 
-                for(index = 0; index < SHM_FILE_SIZE; index ++)
+                sleep(random_time);
+
+                sem_wait(sem);
+                if(shared_mem_ptr[index] == 0)
                 {
-                    sleep(random_time);
                     shared_mem_ptr[index] = food;
+                    index ++;
+
+                    if(index >= SHM_FILE_SIZE)
+                    {
+                        index = 0;
+                    }
 
                     ret = msync(shared_mem_ptr, SHM_FILE_SIZE, MS_SYNC);
                     if(ret < 0)
@@ -95,6 +122,7 @@ int main(int argc, char * argv[])
                         state = RELEASE;
                     }
                 }
+                sem_post(sem);
 
                 state = RELEASE;
 
