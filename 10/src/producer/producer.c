@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <time.h>
+#include <string.h>
 #include "interface.h"
 
 typedef enum
@@ -20,14 +22,11 @@ int main(int argc, char * argv[])
 {
     int fd = -1;
     int ret = -1;
-    struct mq_attr mq_attr;
     char * shared_mem_ptr = NULL;
-    char * message_send = NULL;
-    message_type_struct_t message;
     int mqd = -1;
     bool loop = true;
-    uint16_t index = 0;
-    uint8_t food = 0;
+    int index = 0;
+    char food = 0;
     int random_time = 0;
 
     for(; loop == true;)
@@ -111,7 +110,6 @@ int main(int argc, char * argv[])
                 {
                     perror("munmap");
                 }
-                mq_close(mqd);
                 close(fd);
                 loop = false;
 
