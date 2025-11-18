@@ -39,11 +39,11 @@ int main(void)
 
 
     /* producer process 1 */
-    // fork_id = fork();
-    // if(fork_id == 0)
-    // {
-    //     execlp(PRODUCER_PATH, "producer", SHM_FILE_VEGAN_FOOD_SHARED, NULL);
-    // }
+    fork_id = fork();
+    if(fork_id == 0)
+    {
+        execlp(PRODUCER_PATH, "producer", SHM_FILE_VEGAN_FOOD_SHARED, NULL);
+    }
 
     /* producer process 2 */
     fork_id = fork();
@@ -60,18 +60,18 @@ int main(void)
     // }
 
     /* consumer process 2 */
-    fork_id = fork();
-    if(fork_id == 0)
-    {
-        execlp(CONSUMER_PATH, "consumer", CUSTOMER_NON_VEGAN_FOOD, NULL);
-    }
-
-    // /* consumer process 3 */
     // fork_id = fork();
     // if(fork_id == 0)
     // {
-    //     execlp(CONSUMER_PATH, "consumer", CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD, NULL);
+    //     execlp(CONSUMER_PATH, "consumer", CUSTOMER_NON_VEGAN_FOOD, NULL);
     // }
+
+    /* consumer process 3 */
+    fork_id = fork();
+    if(fork_id == 0)
+    {
+        execlp(CONSUMER_PATH, "consumer", CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD, NULL);
+    }
 
     /* wait child process end */
     wait(&child_process_status);

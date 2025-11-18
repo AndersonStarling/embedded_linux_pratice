@@ -75,8 +75,6 @@ int main(int argc, char * argv[])
                         }
                         break;
                     case CUSTOMER_NON_VEGAN_FOOD_ENUM:
-
-                        shared_mem_ptr_non_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_non_vegan, 0);
                         fd_non_vegan = open(SHM_FILE_NON_VEGAN_FOOD_SHARED, O_RDWR);
                         if(fd_non_vegan < 0)
                         {
@@ -87,6 +85,12 @@ int main(int argc, char * argv[])
                         if(sem_non_vegan == SEM_FAILED)
                         {
                             perror("sem_open");
+                        }
+
+                        shared_mem_ptr_non_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_non_vegan, 0);
+                        if(MAP_FAILED == shared_mem_ptr_non_vegan)
+                        {
+                            perror("mmap");
                         }
 
                         break;
@@ -200,7 +204,7 @@ int main(int argc, char * argv[])
                             }
                         }
                         sem_post(sem_non_vegan);
-                        printf("[CON] ID: %d take NON-VEGAN food\n", process_id);
+                        printf("[CON] ID: %d complete take NON-VEGAN food\n", process_id);
 
                         sleep(random_time);
                         break;
