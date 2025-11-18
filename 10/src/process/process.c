@@ -51,6 +51,10 @@ int main(void)
 
     /* wait child process end */
     wait(&child_process_status);
+    wait(&child_process_status);
+    wait(&child_process_status);
+    wait(&child_process_status);
+    wait(&child_process_status);
 
     return 0;
 }

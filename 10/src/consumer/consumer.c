@@ -23,8 +23,8 @@ state_enum_t state = INITIAL;
 static customer_hobbit_enum_t parse_food(const char *str) 
 {
     if (strcmp(str, CUSTOMER_VEGAN_FOOD) == 0) return CUSTOMER_VEGAN_FOOD_ENUM;
-    if (strcmp(str, "stop")  == 0) return CUSTOMER_NON_VEGAN_FOOD_ENUM;
-    if (strcmp(str, "pause") == 0) return CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD_ENUM;
+    if (strcmp(str, CUSTOMER_NON_VEGAN_FOOD)  == 0) return CUSTOMER_NON_VEGAN_FOOD_ENUM;
+    if (strcmp(str, CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD) == 0) return CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD_ENUM;
     return CUSTOMER_UNKNOW;
 }
 
