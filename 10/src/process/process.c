@@ -18,17 +18,21 @@ int main(void)
     int child_process_status = -1;
     sem_t *sem_vegan;
     sem_t *sem_non_vegan;
+    int fd_vegan = -1;
+    int fd_non_vegan = -1;
 
     /* create enviroment */
-    sem_unlink("/vegan_sem");
-    sem_vegan = sem_open("/vegan_sem", O_CREAT, 0666, 1);
+
+    /* init semaphore */
+    sem_unlink(SEM_VEGAN_FOOD);
+    sem_vegan = sem_open(SEM_VEGAN_FOOD, O_CREAT, 0666, 1);
     if(sem_vegan == SEM_FAILED)
     {
         perror("sem_open");
     }
 
-    sem_unlink("/non_vegan_sem");
-    sem_non_vegan = sem_open("/non_vegan_sem", O_CREAT, 0666, 1);
+    sem_unlink(SEM_NON_VEGAN_FOOD);
+    sem_non_vegan = sem_open(SEM_NON_VEGAN_FOOD, O_CREAT, 0666, 1);
     if(sem_non_vegan == SEM_FAILED)
     {
         perror("sem_open");
@@ -37,6 +41,30 @@ int main(void)
     sem_close(sem_vegan);
     sem_close(sem_non_vegan);
 
+    /* init shared file */
+    fd_vegan = open(SHM_FILE_VEGAN_FOOD_SHARED, O_CREAT | O_RDWR, 0666);
+    if(fd_vegan < 0)
+    {
+        perror("open");
+    }
+    ret = ftruncate(fd_vegan, SHM_SIZE);
+    if(ret < 0)
+    {
+        perror("ftruncate");
+    }
+    close(fd_vegan);
+
+    fd_non_vegan = open(SHM_FILE_NON_VEGAN_FOOD_SHARED, O_CREAT | O_RDWR, 0666);
+    if(fd_non_vegan < 0)
+    {
+        perror("open");
+    }
+    ret = ftruncate(fd_non_vegan, SHM_SIZE);
+    if(ret < 0)
+    {
+        perror("ftruncate");
+    }
+    close(fd_non_vegan);
 
     /* producer process 1 */
     fork_id = fork();
@@ -52,19 +80,19 @@ int main(void)
         execlp(PRODUCER_PATH, "producer", SHM_FILE_NON_VEGAN_FOOD_SHARED, NULL);
     }
 
-    // /* consumer process 1 */
-    // fork_id = fork();
-    // if(fork_id == 0)
-    // {
-    //     execlp(CONSUMER_PATH, "consumer", CUSTOMER_VEGAN_FOOD, NULL);
-    // }
+    /* consumer process 1 */
+    fork_id = fork();
+    if(fork_id == 0)
+    {
+        execlp(CONSUMER_PATH, "consumer", CUSTOMER_VEGAN_FOOD, NULL);
+    }
 
     /* consumer process 2 */
-    // fork_id = fork();
-    // if(fork_id == 0)
-    // {
-    //     execlp(CONSUMER_PATH, "consumer", CUSTOMER_NON_VEGAN_FOOD, NULL);
-    // }
+    fork_id = fork();
+    if(fork_id == 0)
+    {
+        execlp(CONSUMER_PATH, "consumer", CUSTOMER_NON_VEGAN_FOOD, NULL);
+    }
 
     /* consumer process 3 */
     fork_id = fork();
@@ -84,13 +112,3 @@ int main(void)
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-

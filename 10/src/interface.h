@@ -34,5 +34,8 @@ typedef enum {
 #define SHM_FILE_NON_VEGAN_FOOD_SHARED "./non_vegan_food.txt"
 #define SHM_FILE_SIZE 10u
 
+#define SEM_VEGAN_FOOD     "/vegan_sem"
+#define SEM_NON_VEGAN_FOOD "/non_vegan_sem"
+
 
 #endif /* INTERFACE_H */

@@ -46,19 +46,19 @@ int main(int argc, char * argv[])
 
                 srand(time(NULL));
                 
-                fd = open(argv[1], O_CREAT | O_RDWR, 0666);
+                fd = open(argv[1], O_RDWR);
                 if(fd < 0)
                 {
                     perror("open");
                     state = RELEASE;
                 }
 
-                ret = ftruncate(fd, SHM_SIZE);
-                if(ret < 0)
-                {
-                    perror("ftruncate");
-                    state = RELEASE;
-                }
+                // ret = ftruncate(fd, SHM_SIZE);
+                // if(ret < 0)
+                // {
+                //     perror("ftruncate");
+                //     state = RELEASE;
+                // }
 
                 shared_mem_ptr = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd, 0);
                 if(MAP_FAILED == shared_mem_ptr)
@@ -69,11 +69,11 @@ int main(int argc, char * argv[])
 
                 if(strcmp(argv[1], SHM_FILE_VEGAN_FOOD_SHARED) == 0)
                 {
-                    sem = sem_open("/vegan_sem", 1);
+                    sem = sem_open(SEM_VEGAN_FOOD, 1);
                 }
                 else
                 {
-                    sem = sem_open("/non_vegan_sem", 1);
+                    sem = sem_open(SEM_NON_VEGAN_FOOD, 1);
                 }
 
                 if(sem == SEM_FAILED)
@@ -149,11 +149,11 @@ int main(int argc, char * argv[])
                 sem_close(sem);
                 if(strcmp(argv[1], SHM_FILE_VEGAN_FOOD_SHARED) == 0)
                 {
-                    sem_unlink("/vegan_sem");
+                    sem_unlink(SEM_VEGAN_FOOD);
                 }
                 else
                 {
-                    sem_unlink("/non_vegan_sem");
+                    sem_unlink(SEM_NON_VEGAN_FOOD);
                 }
 
                 loop = false;

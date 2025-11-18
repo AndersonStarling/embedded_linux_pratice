@@ -62,7 +62,7 @@ int main(int argc, char * argv[])
                             perror("open");
                         }
 
-                        sem_vegan = sem_open("/vegan_sem", 1);
+                        sem_vegan = sem_open(SEM_VEGAN_FOOD, 1);
                         if(sem_vegan == SEM_FAILED)
                         {
                             perror("sem_open");
@@ -81,7 +81,7 @@ int main(int argc, char * argv[])
                             perror("open");
                         }
 
-                        sem_non_vegan = sem_open("/non_vegan_sem", 1);
+                        sem_non_vegan = sem_open(SEM_NON_VEGAN_FOOD, 1);
                         if(sem_non_vegan == SEM_FAILED)
                         {
                             perror("sem_open");
@@ -118,13 +118,13 @@ int main(int argc, char * argv[])
                             perror("mmap");
                         }
 
-                        sem_vegan = sem_open("/vegan_sem", 1);
+                        sem_vegan = sem_open(SEM_VEGAN_FOOD, 1);
                         if(sem_vegan == SEM_FAILED)
                         {
                             perror("sem_open");
                         }
 
-                        sem_non_vegan = sem_open("/non_vegan_sem", 1);
+                        sem_non_vegan = sem_open(SEM_NON_VEGAN_FOOD, 1);
                         if(sem_non_vegan == SEM_FAILED)
                         {
                             perror("sem_open");
