@@ -69,18 +69,17 @@ int main(int argc, char * argv[])
 
                 if(strcmp(argv[1], SHM_FILE_VEGAN_FOOD_SHARED) == 0)
                 {
-                    sem = sem_open("./vegan_sem", O_CREAT, 0666, 0);
+                    sem = sem_open("/vegan_sem", 1);
                 }
                 else
                 {
-                    sem = sem_open("./non_vegan_sem", O_CREAT, 0666, 0);
+                    sem = sem_open("/non_vegan_sem", 1);
                 }
 
                 if(sem == SEM_FAILED)
                 {
                     perror("sem_open");
                 }
-
 
                 state = PROCESSCING;
                 break;
@@ -100,6 +99,16 @@ int main(int argc, char * argv[])
                 sleep(random_time);
 
                 sem_wait(sem);
+                if(strcmp(argv[1], SHM_FILE_VEGAN_FOOD_SHARED) == 0)
+                {
+                    printf("[PRO] ID: %d produce VEGAN food\n", process_id);
+                }
+
+                if(strcmp(argv[1], SHM_FILE_NON_VEGAN_FOOD_SHARED) == 0)
+                {
+                    printf("[PRO] ID: %d produce NON-VEGAN food\n", process_id);
+                }
+
                 if(shared_mem_ptr[index] == 0)
                 {
                     shared_mem_ptr[index] = food;
@@ -118,6 +127,15 @@ int main(int argc, char * argv[])
                     }
                 }
                 sem_post(sem);
+                if(strcmp(argv[1], SHM_FILE_VEGAN_FOOD_SHARED) == 0)
+                {
+                    printf("[PRO] ID: %d complete produce VEGAN food\n", process_id);
+                }
+
+                if(strcmp(argv[1], SHM_FILE_NON_VEGAN_FOOD_SHARED) == 0)
+                {
+                    printf("[PRO] ID: %d complete produce NON-VEGAN food\n", process_id);
+                }
                 break;
             case RELEASE:
                 printf("[PRO] ID: %d in RELEASE\n", process_id);
@@ -131,11 +149,11 @@ int main(int argc, char * argv[])
                 sem_close(sem);
                 if(strcmp(argv[1], SHM_FILE_VEGAN_FOOD_SHARED) == 0)
                 {
-                    sem_unlink("./vegan_sem");
+                    sem_unlink("/vegan_sem");
                 }
                 else
                 {
-                    sem_unlink("./non_vegan_sem");
+                    sem_unlink("/non_vegan_sem");
                 }
 
                 loop = false;
@@ -146,6 +164,8 @@ int main(int argc, char * argv[])
                 break;
         }
     }
+
+    printf("loop = %d\n", loop);
 
     return 0;
 }

@@ -47,10 +47,6 @@ int main(int argc, char * argv[])
         switch(state)
         {
             case INITIAL:
-                /* Init sequence:
-                1. Init queue to starting read from shared mem
-                2. Open shared file use to store data between producer and consumer
-                */
                 process_id = getpid();
                 printf("[CON] ID: %d in INITIAL\n", process_id);
 
@@ -66,7 +62,7 @@ int main(int argc, char * argv[])
                             perror("open");
                         }
 
-                        sem_vegan = sem_open("./vegan_sem", O_CREAT, 0);
+                        sem_vegan = sem_open("/vegan_sem", 1);
                         if(sem_vegan == SEM_FAILED)
                         {
                             perror("sem_open");
@@ -87,7 +83,7 @@ int main(int argc, char * argv[])
                             perror("open");
                         }
 
-                        sem_non_vegan = sem_open("./non_vegan_sem", 0);
+                        sem_non_vegan = sem_open("/non_vegan_sem", 1);
                         if(sem_non_vegan == SEM_FAILED)
                         {
                             perror("sem_open");
@@ -118,13 +114,13 @@ int main(int argc, char * argv[])
                             perror("mmap");
                         }
 
-                        sem_vegan = sem_open("./vegan_sem", 0);
+                        sem_vegan = sem_open("/vegan_sem", 1);
                         if(sem_vegan == SEM_FAILED)
                         {
                             perror("sem_open");
                         }
 
-                        sem_non_vegan = sem_open("./non_vegan_sem", 0);
+                        sem_non_vegan = sem_open("/non_vegan_sem", 1);
                         if(sem_non_vegan == SEM_FAILED)
                         {
                             perror("sem_open");
@@ -145,6 +141,7 @@ int main(int argc, char * argv[])
                     case CUSTOMER_VEGAN_FOOD_ENUM:
                         /* take the food */
                         sem_wait(sem_vegan);
+                        printf("[CON] ID: %d take VEGAN food\n", process_id);
                         for(index = 0; index < SHM_FILE_SIZE; index ++)
                         {
                             if(shared_mem_ptr_vegan[index] != 0)
@@ -154,6 +151,7 @@ int main(int argc, char * argv[])
                             }
                         }
                         sem_post(sem_vegan);
+                        printf("[CON] ID: %d complete take VEGAN food\n", process_id);
 
                         sleep(random_time);
 
@@ -161,6 +159,7 @@ int main(int argc, char * argv[])
                     case CUSTOMER_NON_VEGAN_FOOD_ENUM:
                         /* take the food */
                         sem_wait(sem_non_vegan);
+                        printf("[CON] ID: %d take NON-VEGAN food\n", process_id);
                         for(index = 0; index < SHM_FILE_SIZE; index ++)
                         {
                             if(shared_mem_ptr_non_vegan[index] != 0)
@@ -170,6 +169,7 @@ int main(int argc, char * argv[])
                             }
                         }
                         sem_post(sem_non_vegan);
+                        printf("[CON] ID: %d complete take NON-VEGAN food\n", process_id);
 
                         sleep(random_time);
 
@@ -177,6 +177,7 @@ int main(int argc, char * argv[])
                     case CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD_ENUM:
                         /* take the food */
                         sem_wait(sem_vegan);
+                        printf("[CON] ID: %d take VEGAN food\n", process_id);
                         for(index = 0; index < SHM_FILE_SIZE; index ++)
                         {
                             if(shared_mem_ptr_vegan[index] != 0)
@@ -186,8 +187,10 @@ int main(int argc, char * argv[])
                             }
                         }
                         sem_post(sem_vegan);
+                        printf("[CON] ID: %d complete take VEGAN food\n", process_id);
 
                         sem_wait(sem_non_vegan);
+                        printf("[CON] ID: %d take NON-VEGAN food\n", process_id);
                         for(index = 0; index < SHM_FILE_SIZE; index ++)
                         {
                             if(shared_mem_ptr_non_vegan[index] != 0)
@@ -197,12 +200,15 @@ int main(int argc, char * argv[])
                             }
                         }
                         sem_post(sem_non_vegan);
+                        printf("[CON] ID: %d take NON-VEGAN food\n", process_id);
 
                         sleep(random_time);
                         break;
                     default:
                         break;
                 }
+
+                break;
 
             case RELEASE:
                 printf("[CON] ID: %d in RELEASE\n", process_id);
