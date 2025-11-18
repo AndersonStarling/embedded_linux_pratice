@@ -1,9 +1,9 @@
-# 🧠 Embedded Linux Practice
+# Embedded Linux Practice
 
 A curated collection of Embedded Linux projects developed for learning and mastering low-level system programming, build automation, and board bring-up.
 Each sub-project focuses on a specific embedded concept — from basic C library management to Linux kernel module, Yocto BSP, and bootloader customization.
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```
 embedded-linux-practice/
@@ -21,7 +21,7 @@ embedded-linux-practice/
 ```
 
 
-## 🎯 Objective
+## Objective
 
 This repository is built as a learning roadmap for Embedded Linux engineers who want to:
 - Understand how Linux interacts with hardware.
@@ -29,7 +29,7 @@ This repository is built as a learning roadmap for Embedded Linux engineers who 
 - Learn to use Yocto Project for system integration.
 - Practice driver development, secure boot, and debugging tools.
 
-## 🧰 Development Environment
+## Development Environment
 
 - OS: Ubuntu 20.04 LTS
 - Compiler: GCC / ARM-GCC
