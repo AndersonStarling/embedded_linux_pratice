@@ -43,217 +43,220 @@ int main(int argc, char * argv[])
     pid_t process_id;
 
     for(; loop == true;)
-    switch(state)
     {
-        case INITIAL:
-            /* Init sequence:
-               1. Init queue to starting read from shared mem
-               2. Open shared file use to store data between producer and consumer
-            */
-            process_id = getpid();
-            printf("[CON] ID: %d in INITIAL\n", process_id);
+        switch(state)
+        {
+            case INITIAL:
+                /* Init sequence:
+                1. Init queue to starting read from shared mem
+                2. Open shared file use to store data between producer and consumer
+                */
+                process_id = getpid();
+                printf("[CON] ID: %d in INITIAL\n", process_id);
 
-            srand(time(NULL));
+                srand(time(NULL));
 
-            switch(parse_food(argv[1]))
-            {
-                case CUSTOMER_VEGAN_FOOD_ENUM:
-                    fd_vegan = open(SHM_FILE_VEGAN_FOOD_SHARED, O_RDWR);
+                switch(parse_food(argv[1]))
+                {
+                    case CUSTOMER_VEGAN_FOOD_ENUM:
+                        fd_vegan = open(SHM_FILE_VEGAN_FOOD_SHARED, O_RDWR);
 
-                    if(fd_vegan < 0)
-                    {
-                        perror("open");
-                    }
-
-                    sem_vegan = sem_open("./vegan_sem", O_CREAT, 0);
-                    if(sem_vegan == SEM_FAILED)
-                    {
-                        perror("sem_open");
-                    }
-
-                    shared_mem_ptr_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_vegan, 0);
-                    if(MAP_FAILED == shared_mem_ptr_vegan)
-                    {
-                        perror("mmap");
-                    }
-                    break;
-                case CUSTOMER_NON_VEGAN_FOOD_ENUM:
-
-                    shared_mem_ptr_non_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_non_vegan, 0);
-                    fd_non_vegan = open(SHM_FILE_NON_VEGAN_FOOD_SHARED, O_RDWR);
-                    if(fd_non_vegan < 0)
-                    {
-                        perror("open");
-                    }
-
-                    sem_non_vegan = sem_open("./non_vegan_sem", 0);
-                    if(sem_non_vegan == SEM_FAILED)
-                    {
-                        perror("sem_open");
-                    }
-
-                    break;
-                case CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD_ENUM:
-                    fd_vegan = open(SHM_FILE_VEGAN_FOOD_SHARED, O_RDWR);
-                    if(fd_vegan < 0)
-                    {
-                        perror("open");
-                    }
-
-                    shared_mem_ptr_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_vegan, 0);
-                    if(MAP_FAILED == shared_mem_ptr_vegan)
-                    {
-                        perror("mmap");
-                    }
-
-                    fd_non_vegan = open(SHM_FILE_NON_VEGAN_FOOD_SHARED, O_RDWR);
-                    if(fd_non_vegan < 0)
-                    {
-                        perror("open");
-                    }
-                    shared_mem_ptr_non_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_non_vegan, 0);
-                    if(MAP_FAILED == shared_mem_ptr_non_vegan)
-                    {
-                        perror("mmap");
-                    }
-
-                    sem_vegan = sem_open("./vegan_sem", 0);
-                    if(sem_vegan == SEM_FAILED)
-                    {
-                        perror("sem_open");
-                    }
-
-                    sem_non_vegan = sem_open("./non_vegan_sem", 0);
-                    if(sem_non_vegan == SEM_FAILED)
-                    {
-                        perror("sem_open");
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            state = PROCESSCING;
-            break;
-        case PROCESSCING:
-            printf("[CON] ID: %d in PROCESSCING\n", process_id);
-            random_time = (rand() % 5) + 11;
-
-            switch(parse_food(argv[1]))
-            {
-                case CUSTOMER_VEGAN_FOOD_ENUM:
-                    /* take the food */
-                    sem_wait(sem_vegan);
-                    for(index = 0; index < SHM_FILE_SIZE; index ++)
-                    {
-                        if(shared_mem_ptr_vegan[index] != 0)
+                        if(fd_vegan < 0)
                         {
-                            shared_mem_ptr_vegan[index] = 0;
-                            break;
+                            perror("open");
                         }
-                    }
-                    sem_post(sem_vegan);
 
-                    sleep(random_time);
-
-                    break;
-                case CUSTOMER_NON_VEGAN_FOOD_ENUM:
-                    /* take the food */
-                    sem_wait(sem_non_vegan);
-                    for(index = 0; index < SHM_FILE_SIZE; index ++)
-                    {
-                        if(shared_mem_ptr_non_vegan[index] != 0)
+                        sem_vegan = sem_open("./vegan_sem", O_CREAT, 0);
+                        if(sem_vegan == SEM_FAILED)
                         {
-                            shared_mem_ptr_non_vegan[index] = 0;
-                            break;
+                            perror("sem_open");
                         }
-                    }
-                    sem_post(sem_non_vegan);
 
-                    sleep(random_time);
-
-                    break;
-                case CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD_ENUM:
-                    /* take the food */
-                    sem_wait(sem_vegan);
-                    for(index = 0; index < SHM_FILE_SIZE; index ++)
-                    {
-                        if(shared_mem_ptr_vegan[index] != 0)
+                        shared_mem_ptr_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_vegan, 0);
+                        if(MAP_FAILED == shared_mem_ptr_vegan)
                         {
-                            shared_mem_ptr_vegan[index] = 0;
-                            break;
+                            perror("mmap");
                         }
-                    }
-                    sem_post(sem_vegan);
+                        break;
+                    case CUSTOMER_NON_VEGAN_FOOD_ENUM:
 
-                    sem_wait(sem_non_vegan);
-                    for(index = 0; index < SHM_FILE_SIZE; index ++)
-                    {
-                        if(shared_mem_ptr_non_vegan[index] != 0)
+                        shared_mem_ptr_non_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_non_vegan, 0);
+                        fd_non_vegan = open(SHM_FILE_NON_VEGAN_FOOD_SHARED, O_RDWR);
+                        if(fd_non_vegan < 0)
                         {
-                            shared_mem_ptr_non_vegan[index] = 0;
-                            break;
+                            perror("open");
                         }
-                    }
-                    sem_post(sem_non_vegan);
 
-                    sleep(random_time);
-                    break;
-                default:
-                    break;
-            }
+                        sem_non_vegan = sem_open("./non_vegan_sem", 0);
+                        if(sem_non_vegan == SEM_FAILED)
+                        {
+                            perror("sem_open");
+                        }
 
-        case RELEASE:
-            printf("[CON] ID: %d in RELEASE\n", process_id);
-            switch(parse_food(argv[1]))
-            {
-                case CUSTOMER_VEGAN_FOOD_ENUM:
-                    ret = munmap(shared_mem_ptr_vegan, SHM_SIZE);
-                    if(ret < 0)
-                    {
-                        perror("munmap");
-                    }
+                        break;
+                    case CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD_ENUM:
+                        fd_vegan = open(SHM_FILE_VEGAN_FOOD_SHARED, O_RDWR);
+                        if(fd_vegan < 0)
+                        {
+                            perror("open");
+                        }
 
-                    close(fd_vegan);
+                        shared_mem_ptr_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_vegan, 0);
+                        if(MAP_FAILED == shared_mem_ptr_vegan)
+                        {
+                            perror("mmap");
+                        }
 
-                    break;
-                case CUSTOMER_NON_VEGAN_FOOD_ENUM:
-                    ret = munmap(shared_mem_ptr_non_vegan, SHM_SIZE);
-                    if(ret < 0)
-                    {
-                        perror("munmap");
-                    }
+                        fd_non_vegan = open(SHM_FILE_NON_VEGAN_FOOD_SHARED, O_RDWR);
+                        if(fd_non_vegan < 0)
+                        {
+                            perror("open");
+                        }
+                        shared_mem_ptr_non_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_non_vegan, 0);
+                        if(MAP_FAILED == shared_mem_ptr_non_vegan)
+                        {
+                            perror("mmap");
+                        }
 
-                    close(fd_non_vegan);
+                        sem_vegan = sem_open("./vegan_sem", 0);
+                        if(sem_vegan == SEM_FAILED)
+                        {
+                            perror("sem_open");
+                        }
 
-                    break;
-                case CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD_ENUM:
-                    ret = munmap(shared_mem_ptr_vegan, SHM_SIZE);
-                    if(ret < 0)
-                    {
-                        perror("munmap");
-                    }
+                        sem_non_vegan = sem_open("./non_vegan_sem", 0);
+                        if(sem_non_vegan == SEM_FAILED)
+                        {
+                            perror("sem_open");
+                        }
+                        break;
+                    default:
+                        break;
+                }
 
-                    ret = munmap(shared_mem_ptr_non_vegan, SHM_SIZE);
-                    if(ret < 0)
-                    {
-                        perror("munmap");
-                    }
+                state = PROCESSCING;
+                break;
+            case PROCESSCING:
+                printf("[CON] ID: %d in PROCESSCING\n", process_id);
+                random_time = (rand() % 5) + 11;
 
-                    close(fd_vegan);
-                    close(fd_non_vegan);
+                switch(parse_food(argv[1]))
+                {
+                    case CUSTOMER_VEGAN_FOOD_ENUM:
+                        /* take the food */
+                        sem_wait(sem_vegan);
+                        for(index = 0; index < SHM_FILE_SIZE; index ++)
+                        {
+                            if(shared_mem_ptr_vegan[index] != 0)
+                            {
+                                shared_mem_ptr_vegan[index] = 0;
+                                break;
+                            }
+                        }
+                        sem_post(sem_vegan);
 
-                    break;
-                default:
-                    break;
-            }    
+                        sleep(random_time);
 
-            loop = false;
-            break;
-        default:
-            state = INITIAL;
-            break;
+                        break;
+                    case CUSTOMER_NON_VEGAN_FOOD_ENUM:
+                        /* take the food */
+                        sem_wait(sem_non_vegan);
+                        for(index = 0; index < SHM_FILE_SIZE; index ++)
+                        {
+                            if(shared_mem_ptr_non_vegan[index] != 0)
+                            {
+                                shared_mem_ptr_non_vegan[index] = 0;
+                                break;
+                            }
+                        }
+                        sem_post(sem_non_vegan);
+
+                        sleep(random_time);
+
+                        break;
+                    case CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD_ENUM:
+                        /* take the food */
+                        sem_wait(sem_vegan);
+                        for(index = 0; index < SHM_FILE_SIZE; index ++)
+                        {
+                            if(shared_mem_ptr_vegan[index] != 0)
+                            {
+                                shared_mem_ptr_vegan[index] = 0;
+                                break;
+                            }
+                        }
+                        sem_post(sem_vegan);
+
+                        sem_wait(sem_non_vegan);
+                        for(index = 0; index < SHM_FILE_SIZE; index ++)
+                        {
+                            if(shared_mem_ptr_non_vegan[index] != 0)
+                            {
+                                shared_mem_ptr_non_vegan[index] = 0;
+                                break;
+                            }
+                        }
+                        sem_post(sem_non_vegan);
+
+                        sleep(random_time);
+                        break;
+                    default:
+                        break;
+                }
+
+            case RELEASE:
+                printf("[CON] ID: %d in RELEASE\n", process_id);
+                switch(parse_food(argv[1]))
+                {
+                    case CUSTOMER_VEGAN_FOOD_ENUM:
+                        ret = munmap(shared_mem_ptr_vegan, SHM_SIZE);
+                        if(ret < 0)
+                        {
+                            perror("munmap");
+                        }
+
+                        close(fd_vegan);
+
+                        break;
+                    case CUSTOMER_NON_VEGAN_FOOD_ENUM:
+                        ret = munmap(shared_mem_ptr_non_vegan, SHM_SIZE);
+                        if(ret < 0)
+                        {
+                            perror("munmap");
+                        }
+
+                        close(fd_non_vegan);
+
+                        break;
+                    case CUSTOMER_VEGAN_AND_NON_VEGAN_FOOD_ENUM:
+                        ret = munmap(shared_mem_ptr_vegan, SHM_SIZE);
+                        if(ret < 0)
+                        {
+                            perror("munmap");
+                        }
+
+                        ret = munmap(shared_mem_ptr_non_vegan, SHM_SIZE);
+                        if(ret < 0)
+                        {
+                            perror("munmap");
+                        }
+
+                        close(fd_vegan);
+                        close(fd_non_vegan);
+
+                        break;
+                    default:
+                        break;
+                }    
+
+                loop = false;
+                break;
+            default:
+                state = INITIAL;
+                break;
+        }
     }
+    
 
     return 0;
 }
