@@ -108,7 +108,5 @@ int main(void)
     wait(&child_process_status);
     wait(&child_process_status);
 
-    printf("DEBUG\n");
-
     return 0;
 }
