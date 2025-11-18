@@ -40,6 +40,7 @@ int main(int argc, char * argv[])
     int random_time = 0;
     sem_t *sem_vegan = NULL;
     sem_t *sem_non_vegan = NULL;
+    pid_t process_id;
 
     for(; loop == true;)
     switch(state)
@@ -49,6 +50,9 @@ int main(int argc, char * argv[])
                1. Init queue to starting read from shared mem
                2. Open shared file use to store data between producer and consumer
             */
+            process_id = getpid();
+            printf("[CON] ID: %d in INITIAL\n", process_id);
+
             srand(time(NULL));
 
             switch(parse_food(argv[1]))
@@ -59,7 +63,6 @@ int main(int argc, char * argv[])
                     if(fd_vegan < 0)
                     {
                         perror("open");
-                        state = RELEASE;
                     }
 
                     sem_vegan = sem_open("./vegan_sem", O_CREAT, 0);
@@ -72,7 +75,6 @@ int main(int argc, char * argv[])
                     if(MAP_FAILED == shared_mem_ptr_vegan)
                     {
                         perror("mmap");
-                        state = RELEASE;
                     }
                     break;
                 case CUSTOMER_NON_VEGAN_FOOD_ENUM:
@@ -82,7 +84,6 @@ int main(int argc, char * argv[])
                     if(fd_non_vegan < 0)
                     {
                         perror("open");
-                        state = RELEASE;
                     }
 
                     sem_non_vegan = sem_open("./non_vegan_sem", 0);
@@ -97,27 +98,23 @@ int main(int argc, char * argv[])
                     if(fd_vegan < 0)
                     {
                         perror("open");
-                        state = RELEASE;
                     }
 
                     shared_mem_ptr_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_vegan, 0);
                     if(MAP_FAILED == shared_mem_ptr_vegan)
                     {
                         perror("mmap");
-                        state = RELEASE;
                     }
 
                     fd_non_vegan = open(SHM_FILE_NON_VEGAN_FOOD_SHARED, O_RDWR);
                     if(fd_non_vegan < 0)
                     {
                         perror("open");
-                        state = RELEASE;
                     }
                     shared_mem_ptr_non_vegan = mmap(NULL, SHM_SIZE, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_non_vegan, 0);
                     if(MAP_FAILED == shared_mem_ptr_non_vegan)
                     {
                         perror("mmap");
-                        state = RELEASE;
                     }
 
                     sem_vegan = sem_open("./vegan_sem", 0);
@@ -139,11 +136,7 @@ int main(int argc, char * argv[])
             state = PROCESSCING;
             break;
         case PROCESSCING:
-            /* Processing sequence:
-               1. Wait COMPLETE command
-               2. Read data from shared mem
-            */
-
+            printf("[CON] ID: %d in PROCESSCING\n", process_id);
             random_time = (rand() % 5) + 11;
 
             switch(parse_food(argv[1]))
@@ -211,6 +204,7 @@ int main(int argc, char * argv[])
             }
 
         case RELEASE:
+            printf("[CON] ID: %d in RELEASE\n", process_id);
             switch(parse_food(argv[1]))
             {
                 case CUSTOMER_VEGAN_FOOD_ENUM:

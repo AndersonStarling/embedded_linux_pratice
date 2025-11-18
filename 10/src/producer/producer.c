@@ -8,6 +8,7 @@
 #include <time.h>
 #include <string.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <semaphore.h>
 #include "interface.h"
@@ -32,19 +33,16 @@ int main(int argc, char * argv[])
     char food = 0;
     int random_time = 0;
     sem_t *sem = NULL;
+    pid_t process_id;
 
     for(; loop == true;)
     {
         switch(state)
         {
             case INITIAL:
-                /* Init sequence:
-                   1. Unlink old queue
-                   2. Init queue to completing write to shared mem
-                   3. Create shared file use to store data between producer and consumer
-                   4. Allocate logical size to shared file
-                   5. Allocate shared mem and bind to shared file
-                */
+
+                process_id = getpid();
+                printf("[PRO] ID: %d in INITIAL\n", process_id);
 
                 srand(time(NULL));
                 
@@ -87,10 +85,7 @@ int main(int argc, char * argv[])
                 state = PROCESSCING;
                 break;
             case PROCESSCING:
-                /* Processing sequence:
-                   1. Write to share mem and flush data to share file
-                   2. Send COMPLETE mesaage to consumer 
-                */
+                printf("[PRO] ID: %d in PROCESSCING\n", process_id);
                 if(strcmp(argv[1], SHM_FILE_VEGAN_FOOD_SHARED) == 0)
                 {
                     food = 1;
@@ -123,22 +118,26 @@ int main(int argc, char * argv[])
                     }
                 }
                 sem_post(sem);
-
-                state = RELEASE;
-
                 break;
             case RELEASE:
-                /* Release sequence:
-                   1. Unmap shared mem
-                   2. Close queue
-                   3. Close shared file
-                 */
+                printf("[PRO] ID: %d in RELEASE\n", process_id);
                 ret = munmap(shared_mem_ptr, SHM_SIZE);
                 if(ret < 0)
                 {
                     perror("munmap");
                 }
                 close(fd);
+
+                sem_close(sem);
+                if(strcmp(argv[1], SHM_FILE_VEGAN_FOOD_SHARED) == 0)
+                {
+                    sem_unlink("./vegan_sem");
+                }
+                else
+                {
+                    sem_unlink("./non_vegan_sem");
+                }
+
                 loop = false;
 
                 break;
@@ -147,7 +146,6 @@ int main(int argc, char * argv[])
                 break;
         }
     }
-    
 
     return 0;
 }
