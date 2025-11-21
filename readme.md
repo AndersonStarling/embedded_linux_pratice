@@ -17,6 +17,7 @@ embedded-linux-practice/
 ├── 08        # Pratice IPC pipe
 ├── 09        # Pratice IPC share mem
 ├── 10        # Pratice IPC semaphore
+├── doc       # documentation
 └── README.md
 ```
 
