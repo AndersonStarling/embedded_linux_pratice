@@ -8,3 +8,5 @@
 /*.mod*
 /*.symvers
 /*.order
+/*/output
+/*.cmd
