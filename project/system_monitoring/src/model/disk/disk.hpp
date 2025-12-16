@@ -4,9 +4,12 @@
 class disk
 {
     public:
-        uint64_t get_disk_read_speed(void);
-        uint64_t get_disk_write_speed(void);
+        void calculate_disk_speed(void);
+        float get_read_speed(void);
+        float get_write_speed(void);
     private:
+        float read_speed;
+        float write_speed;
         bool valid_disk(char * buffer, uint16_t buffer_size);
 
 };
