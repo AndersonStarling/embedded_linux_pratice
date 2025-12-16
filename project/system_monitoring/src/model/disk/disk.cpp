@@ -3,7 +3,6 @@
 #include <string>
 #include <inttypes.h>
 #include "disk.hpp"
-#include <iostream>
 
 #define DISK_SPEED_PATH "/proc/diskstats"
 #define BUFFER_SIZE 256u
