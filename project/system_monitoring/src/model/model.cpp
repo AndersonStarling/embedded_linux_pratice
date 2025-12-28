@@ -1,10 +1,10 @@
 #include <iostream>
 #include <fcntl.h>
-#include "cpu.hpp"
-#include "disk.hpp"
-#include "mem.hpp"
-#include "system.hpp"
-#include "model.hpp"
+#include "cpu.h"
+#include "disk.h"
+#include "mem.h"
+#include "system.h"
+#include "model.h"
 
 
 void model::sync_info(void)

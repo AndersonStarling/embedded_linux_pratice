@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <fcntl.h>
 #include <unistd.h>
-#include "cpu.hpp"
+#include "cpu.h"
 
 using namespace std;
 

@@ -2,7 +2,7 @@
 #include <string>
 #include <unistd.h>
 #include <inttypes.h>
-#include "mem.hpp"
+#include "mem.h"
 
 #define MEM_INFO_PATH "/proc/meminfo"
 #define BUFFER_SIZE 256u

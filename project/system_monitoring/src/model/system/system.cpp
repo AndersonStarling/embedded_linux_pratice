@@ -2,7 +2,7 @@
 #include <string>
 #include <unistd.h>
 #include <inttypes.h>
-#include "system.hpp"
+#include "system.h"
 
 #define SYSTEM_UPTIME_PATH "/proc/uptime"
 #define SYSTEM_KERNEL_VERSION_PATH "/proc/sys/kernel/osrelease"
