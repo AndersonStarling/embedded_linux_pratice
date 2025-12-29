@@ -38,20 +38,21 @@ void controller::update_data(void)
 
     double cpu_usage = m_model->get_cpu_usage();
     double cpu_temperature = m_model->get_cpu_temp();
-    double ram = m_model->get_mem_total();
     double cpu_freq = QRandomGenerator::global()->generateDouble();
     double cpu_load = QRandomGenerator::global()->generateDouble() + 2.0;
-    double ram_used = m_model->get_mem_total() - m_model->get_mem_free();
-    double ram_cached = m_model->get_cached();
-    double ram_swap = m_model->get_swap_cached();
-    double ram_free = m_model->get_mem_free();
+    double ram_used = (m_model->get_mem_total() - m_model->get_mem_free()) / (1024 * 1024);
+    double ram_cached = m_model->get_cached() / (1024 * 1024);
+    double ram_swap = m_model->get_swap_cached() / (1024 * 1024);
+    double ram_free = m_model->get_mem_free() / (1024 * 1024);
+    double ram_total = m_model->get_mem_total() / (1024 * 1024);
     QString kernel_version =  QString::fromStdString(m_model->get_kernel_version());
     QString uptime = QString::fromStdString("15:38:40");
     double load_avg = m_model->get_load_average();
 
+    m_view->update_ram_total(ram_total);
     m_view->update_cpu_usage(cpu_usage);
     m_view->update_cpu_temperature(cpu_temperature);
-    m_view->update_ram(ram);
+    m_view->update_ram(ram_used);
     m_view->update_cpu_freq(cpu_freq);
     m_view->update_cpu_load(cpu_load);
     m_view->update_ram_used(ram_used);

@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_cpu">
     <property name="baseSize">
@@ -168,7 +168,7 @@
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -230,7 +230,7 @@
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>120</x>
@@ -364,7 +364,7 @@
     <widget class="QWidget" name="layoutWidget_6">
      <property name="geometry">
       <rect>
-       <x>30</x>
+       <x>20</x>
        <y>160</y>
        <width>58</width>
        <height>91</height>
@@ -431,9 +431,9 @@
     <widget class="QWidget" name="layoutWidget_7">
      <property name="geometry">
       <rect>
-       <x>100</x>
+       <x>80</x>
        <y>160</y>
-       <width>83</width>
+       <width>131</width>
        <height>90</height>
       </rect>
      </property>
@@ -451,6 +451,18 @@
         </property>
         <item>
          <widget class="QLabel" name="ram_used">
+          <property name="minimumSize">
+           <size>
+            <width>30</width>
+            <height>17</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>30</width>
+            <height>17</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>75</weight>
@@ -458,12 +470,24 @@
            </font>
           </property>
           <property name="text">
-           <string>1GB</string>
+           <string>1</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="ram_used_slash">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>17</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>10</width>
+            <height>17</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>75</weight>
@@ -477,6 +501,18 @@
         </item>
         <item>
          <widget class="QLabel" name="ram_used_total">
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>17</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>17</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>75</weight>
@@ -485,6 +521,9 @@
           </property>
           <property name="text">
            <string>4GB</string>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -497,6 +536,18 @@
         </property>
         <item>
          <widget class="QLabel" name="ram_cached">
+          <property name="minimumSize">
+           <size>
+            <width>30</width>
+            <height>17</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>30</width>
+            <height>17</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>75</weight>
@@ -504,12 +555,24 @@
            </font>
           </property>
           <property name="text">
-           <string>1GB</string>
+           <string>1</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="ram_cached_slash">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>17</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>10</width>
+            <height>17</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>75</weight>
@@ -522,7 +585,19 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="ram_used_total_2">
+         <widget class="QLabel" name="ram_cached_total">
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>17</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>17</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>75</weight>
@@ -543,6 +618,18 @@
         </property>
         <item>
          <widget class="QLabel" name="ram_swap">
+          <property name="minimumSize">
+           <size>
+            <width>30</width>
+            <height>17</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>30</width>
+            <height>17</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>75</weight>
@@ -550,12 +637,24 @@
            </font>
           </property>
           <property name="text">
-           <string>1GB</string>
+           <string>1</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="ram_swap_slash">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>17</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>10</width>
+            <height>17</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>75</weight>
@@ -568,7 +667,19 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="ram_used_total_3">
+         <widget class="QLabel" name="ram_swap_total">
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>17</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>17</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>75</weight>
@@ -589,6 +700,18 @@
         </property>
         <item>
          <widget class="QLabel" name="ram_free">
+          <property name="minimumSize">
+           <size>
+            <width>30</width>
+            <height>17</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>30</width>
+            <height>17</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>75</weight>
@@ -596,12 +719,24 @@
            </font>
           </property>
           <property name="text">
-           <string>1GB</string>
+           <string>1</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="ram_free_slash">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>17</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>10</width>
+            <height>17</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>75</weight>
@@ -614,7 +749,19 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="ram_used_total_4">
+         <widget class="QLabel" name="ram_free_total">
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>17</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>17</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>75</weight>
@@ -659,7 +806,7 @@
       <rect>
        <x>10</x>
        <y>60</y>
-       <width>109</width>
+       <width>81</width>
        <height>87</height>
       </rect>
      </property>
@@ -676,7 +823,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Kernel version:</string>
+         <string>Kernel ver:</string>
         </property>
        </widget>
       </item>
@@ -702,7 +849,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Load average:</string>
+         <string>Load avg:</string>
         </property>
        </widget>
       </item>
@@ -711,9 +858,9 @@
     <widget class="QWidget" name="layoutWidget_9">
      <property name="geometry">
       <rect>
-       <x>130</x>
+       <x>100</x>
        <y>60</y>
-       <width>91</width>
+       <width>121</width>
        <height>87</height>
       </rect>
      </property>

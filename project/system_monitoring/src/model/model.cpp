@@ -6,6 +6,8 @@
 #include "system.h"
 #include "model.h"
 
+using namespace std;
+
 
 void model::sync_info(void)
 {
@@ -30,6 +32,8 @@ void model::sync_info(void)
     this->up_time        = system_obj.get_up_time();
     this->kernel_version = system_obj.get_kernel_version();
     this->load_average   = system_obj.get_load_average();
+
+    cout << "mem_total = " << this->mem_total << endl;
 }
 
 float model::get_cpu_usage(void)

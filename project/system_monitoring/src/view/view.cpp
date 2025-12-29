@@ -34,7 +34,7 @@ view::view(QWidget *parent)
     /* ram */
     this->ram = new GaugeWidget(this);
     this->ram->setTitle("RAM");
-    this->ram->setRange(0, 8.0);
+    this->ram->setRange(0, 16.0);
     this->ram->setUnit(" GB");
     this->ram->setValue(3.5);
     this->ram->update_value();
@@ -88,6 +88,15 @@ void view::update_ram(double value)
     this->ram->update_value();
 }
 
+void view::update_ram_total(double value)
+{
+    ui->ram_used_total->setText(QString::number(value, 'f', 1) + "GB");
+    ui->ram_cached_total->setText(QString::number(value, 'f', 1) + "GB");
+    ui->ram_swap_total->setText(QString::number(value, 'f', 1) + "GB");
+    ui->ram_free_total->setText(QString::number(value, 'f', 1) + "GB");
+}
+
+
 void view::update_cpu_freq(double value)
 {
     ui->cpu_freq_label_value->setText(QString::number(value, 'f', 1) + " Ghz");
@@ -100,22 +109,22 @@ void view::update_cpu_load(double value)
 
 void view::update_ram_used(double value)
 {
-    ui->ram_used->setText(QString::number(value, 'f', 1) + " GB");
+    ui->ram_used->setText(QString::number(value, 'f', 1));
 }
 
 void view::update_ram_cached(double value)
 {
-    ui->ram_cached->setText(QString::number(value, 'f', 1) + " GB");
+    ui->ram_cached->setText(QString::number(value, 'f', 1));
 }
 
 void view::update_ram_swap(double value)
 {
-    ui->ram_swap->setText(QString::number(value, 'f', 1) + " GB");
+    ui->ram_swap->setText(QString::number(value, 'f', 1));
 }
 
 void view::update_ram_free(double value)
 {
-    ui->ram_free->setText(QString::number(value, 'f', 1) + " GB");
+    ui->ram_free->setText(QString::number(value, 'f', 1));
 }
 
 void view::update_kernel_version(const QString &string_value)
