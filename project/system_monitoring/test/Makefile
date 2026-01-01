@@ -28,17 +28,17 @@ all:
 	$(CXX) ${INC_MODEL} -o output/$(TEST_MODEL) $(SRC_MODEL)
 
 run:
-	@echo "--------------"
-	output/$(TEST_CPU)
-	@echo "--------------"
-	output/$(TEST_DISK)
-	@echo "--------------"
+# 	@echo "--------------"
+# 	output/$(TEST_CPU)
+# 	@echo "--------------"
+# 	output/$(TEST_DISK)
+# 	@echo "--------------"
 	output/$(TEST_MEM)
-	@echo "--------------"
-	output/$(TEST_SYSTEM)
-	@echo "--------------"
-	output/$(TEST_MODEL)
-	@echo "--------------"
+# 	@echo "--------------"
+# 	output/$(TEST_SYSTEM)
+# 	@echo "--------------"
+# 	output/$(TEST_MODEL)
+# 	@echo "--------------"
 
 clean:
 	rm -f output/*

@@ -1,5 +1,7 @@
 #include <fcntl.h>
 #include <unistd.h>
+#include <cstdint>
+#include <string>
 #include "cpu.h"
 #include "disk.h"
 #include "mem.h"

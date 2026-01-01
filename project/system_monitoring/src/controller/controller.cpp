@@ -40,11 +40,11 @@ void controller::update_data(void)
     double cpu_temperature = m_model->get_cpu_temp();
     double cpu_freq = QRandomGenerator::global()->generateDouble();
     double cpu_load = QRandomGenerator::global()->generateDouble() + 2.0;
-    double ram_used = (m_model->get_mem_total() - m_model->get_mem_free()) / (1024 * 1024);
-    double ram_cached = m_model->get_cached() / (1024 * 1024);
-    double ram_swap = m_model->get_swap_cached() / (1024 * 1024);
-    double ram_free = m_model->get_mem_free() / (1024 * 1024);
-    double ram_total = m_model->get_mem_total() / (1024 * 1024);
+    double ram_used = ((double)m_model->get_mem_total() - (double)m_model->get_mem_free()) / (1024 * 1024);
+    double ram_cached = (double)m_model->get_cached() / (1024 * 1024);
+    double ram_swap = (double)m_model->get_swap_cached() / (1024 * 1024);
+    double ram_free = (double)m_model->get_mem_free() / (1024 * 1024);
+    double ram_total = (double)m_model->get_mem_total() / (1024 * 1024);
     QString kernel_version =  QString::fromStdString(m_model->get_kernel_version());
     QString uptime = QString::fromStdString("15:38:40");
     double load_avg = m_model->get_load_average();
