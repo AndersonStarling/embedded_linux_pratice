@@ -1,4 +1,3 @@
-#include <iostream>
 #include <fcntl.h>
 #include <unistd.h>
 #include "cpu.h"
@@ -6,8 +5,6 @@
 #include "mem.h"
 #include "system.h"
 #include "model.h"
-
-using namespace std;
 
 model::model()
 {
@@ -55,7 +52,6 @@ void model::thread_model(void)
         }
 
         cpu_usage = get_cpu_usage();
-        cout << "cpu_usage = " << cpu_usage << endl;
 
         sleep(5);
     }  
@@ -89,7 +85,6 @@ void model::sync_info(void)
 
 float model::get_cpu_usage(void)
 {
-    std::lock_guard<std::mutex> lock(locker);
     return this->cpu_usage;
 }
 
