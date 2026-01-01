@@ -10,9 +10,11 @@ int main(int argc, char *argv[])
     model m;
     controller c(&w, &m);
 
-    m.sync_info();
+    m.start_thread();
 
     w.show();
 
     return a.exec();
+
+    return 0;
 }

@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "model.hpp"
+#include "model.h"
 
 using namespace std;
 
@@ -19,7 +19,7 @@ int main(void)
     std::string kernel_version;
     float load_average;
 
-    model_obj.sync_info();
+    model_obj.start_thread();
 
     cpu_usage = model_obj.get_cpu_usage();
     cout << "cpu_usage = " << cpu_usage << endl;
@@ -53,6 +53,8 @@ int main(void)
 
     load_average = model_obj.get_load_average();
     cout << "load_average = " << load_average << endl;
+
+    while(1);
 
     return 0;
 }

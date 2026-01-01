@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "system.hpp"
+#include "system.h"
 
 using namespace std;
 

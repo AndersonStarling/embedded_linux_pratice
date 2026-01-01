@@ -1,5 +1,5 @@
 #include <iostream>
-#include "disk.hpp"
+#include "disk.h"
 
 using namespace std;
 

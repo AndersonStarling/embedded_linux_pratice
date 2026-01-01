@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fcntl.h>
+#include <unistd.h>
 #include "cpu.h"
 #include "disk.h"
 #include "mem.h"
@@ -8,6 +9,57 @@
 
 using namespace std;
 
+model::model()
+{
+
+}
+
+model::~model()
+{
+    stop_thread();
+}
+
+void model::start_thread(void)
+{
+    if(running == true)
+    {
+        return;
+    }
+
+    running = true;
+    thread_of_model = std::thread(&model::thread_model, this);
+}
+
+void model::stop_thread(void)
+{
+    if (running == false)
+    {
+        return;
+    }
+
+    running = false;
+    if (thread_of_model.joinable())
+    {
+        thread_of_model.join();
+    }
+
+}
+
+void model::thread_model(void)
+{
+    while (running == true) 
+    {
+        {
+            std::lock_guard<std::mutex> lock(locker);
+            sync_info();
+        }
+
+        cpu_usage = get_cpu_usage();
+        cout << "cpu_usage = " << cpu_usage << endl;
+
+        sleep(5);
+    }  
+}
 
 void model::sync_info(void)
 {
@@ -33,11 +85,11 @@ void model::sync_info(void)
     this->kernel_version = system_obj.get_kernel_version();
     this->load_average   = system_obj.get_load_average();
 
-    cout << "mem_total = " << this->mem_total << endl;
 }
 
 float model::get_cpu_usage(void)
 {
+    std::lock_guard<std::mutex> lock(locker);
     return this->cpu_usage;
 }
 

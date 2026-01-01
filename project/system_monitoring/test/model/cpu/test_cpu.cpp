@@ -1,5 +1,5 @@
 #include <iostream>
-#include "cpu.hpp"
+#include "cpu.h"
 
 using namespace std;
 

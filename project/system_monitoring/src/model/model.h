@@ -1,6 +1,10 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#include <thread>
+#include <mutex>
+#include <atomic>
+
 class model
 {
     private:
@@ -15,7 +19,15 @@ class model
         uint64_t up_time;
         std::string kernel_version;
         float load_average;
+        std::thread thread_of_model;
+        std::mutex locker;
+        std::atomic<bool> running = false;
+        void thread_model(void);
     public:
+        model();
+        ~model();
+        void start_thread(void);
+        void stop_thread(void);
         void sync_info(void);
         float get_cpu_usage(void);
         float get_cpu_temp(void);

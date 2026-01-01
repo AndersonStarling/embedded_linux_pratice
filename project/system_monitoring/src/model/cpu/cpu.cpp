@@ -6,8 +6,6 @@
 #include <unistd.h>
 #include "cpu.h"
 
-using namespace std;
-
 #define CPU_USAGE_PATH "/proc/stat"
 #define CPU_TEMPERATURE_PATH "/sys/class/thermal/thermal_zone0/temp"
 #define BUFFER_SIZE 256u
@@ -104,9 +102,9 @@ float cpu::get_cpu_usage(void)
         return -1;
     }
 
-    total_t1 += (user_t1 + nice_t1 + system_t1 + idle_t1 + iowait_t1 + irq_t1 + softirq_t1 + steal_t1 + guest_t1 + guest_nice_t1);
-    total_t2 += (user_t2 + nice_t2 + system_t2 + idle_t2 + iowait_t2 + irq_t2 + softirq_t2 + steal_t2 + guest_t2 + guest_nice_t2);
-    
+    total_t1 = (user_t1 + nice_t1 + system_t1 + idle_t1 + iowait_t1 + irq_t1 + softirq_t1 + steal_t1 + guest_t1 + guest_nice_t1);
+    total_t2 = (user_t2 + nice_t2 + system_t2 + idle_t2 + iowait_t2 + irq_t2 + softirq_t2 + steal_t2 + guest_t2 + guest_nice_t2);
+
     delta_total = (total_t2 - total_t1) + 1;
     delta_idle  = (idle_t2  - idle_t1) + 1;
 
