@@ -1,6 +1,8 @@
 #include "controller.h"
 #include "view.h"
-#include <QRandomGenerator>
+#include <QDebug>
+#include <fcntl.h>
+#include <unistd.h>
 #include "model.h"
 
 controller::controller(view *v, model *m, QObject *parent)
@@ -11,35 +13,37 @@ controller::controller(view *v, model *m, QObject *parent)
     connect(&m_timer, &QTimer::timeout,
             this, &controller::update_data);
 
+    this->fifo_fd = open("/tmp/qt_cmd", O_RDWR | O_NONBLOCK);
+    if(this->fifo_fd < 0)
+    {
+        qDebug() << "open failed";
+    }
+
+    this->fifo_notifier = new QSocketNotifier(this->fifo_fd, QSocketNotifier::Read, this);
+
+    connect(this->fifo_notifier, &QSocketNotifier::activated, this, [=](int)
+    {
+        char buf[64] = {0};
+        int n = read(this->fifo_fd, buf, sizeof(buf)-1);
+        if (n > 0) {
+            QString cmd = QString::fromLocal8Bit(buf).trimmed();
+            if (cmd == "tab") 
+            {
+                m_view->switch_tab();
+            }
+        }
+    });
+
     m_timer.start(2000);
 }
 
 void controller::update_data(void)
 {
 
-    // double cpuUsage = m_model->cpuUsage();
-    // double cpuTemp  = m_model->cpuTemp();
-    // double ramUsed  = m_model->ramUsed();
-    // double ramTotal = m_model->ramTotal();
-    // double cpuFreq  = m_model->cpuFreq();
-
-    // double cpu_usage = QRandomGenerator::global()->bounded(0, 100);
-    // double cpu_temperature = QRandomGenerator::global()->generateDouble() * 100.0;
-    // double ram = QRandomGenerator::global()->generateDouble() * 10.0;
-    // double cpu_freq = QRandomGenerator::global()->generateDouble();
-    // double cpu_load = QRandomGenerator::global()->generateDouble() + 2.0;
-    // double ram_used = QRandomGenerator::global()->generateDouble() + 3.0;
-    // double ram_cached = QRandomGenerator::global()->generateDouble();
-    // double ram_swap = QRandomGenerator::global()->generateDouble() + 1.0;
-    // double ram_free = QRandomGenerator::global()->generateDouble() + 3.0;
-    // QString kernel_version = "linux_6.4";
-    // QString uptime = "15:38:40";
-    // double load_avg = QRandomGenerator::global()->generateDouble() + 1.0;
-
     double cpu_usage = m_model->get_cpu_usage();
     double cpu_temperature = m_model->get_cpu_temp();
-    double cpu_freq = QRandomGenerator::global()->generateDouble();
-    double cpu_load = QRandomGenerator::global()->generateDouble() + 2.0;
+    double cpu_freq = m_model->get_cpu_freq();
+    double cpu_load = m_model->get_load_average();
     double ram_used = ((double)m_model->get_mem_total() - (double)m_model->get_mem_free()) / (1024 * 1024);
     double ram_cached = (double)m_model->get_cached() / (1024 * 1024);
     double ram_swap = (double)m_model->get_swap_cached() / (1024 * 1024);

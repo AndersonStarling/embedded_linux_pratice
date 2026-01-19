@@ -58,6 +58,12 @@ view::view(QWidget *parent)
 
 }
 
+void view::switch_tab() 
+{
+    int idx = (ui->tabWidget->currentIndex() + 1) % ui->tabWidget->count();
+    ui->tabWidget->setCurrentIndex(idx);
+}
+
 void view::update_cpu_usage(double value)
 {
     this->cpu_usage->setValue(value);

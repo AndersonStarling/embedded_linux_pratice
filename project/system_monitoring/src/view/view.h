@@ -17,6 +17,7 @@ class view : public QWidget
 public:
     view(QWidget *parent = nullptr);
     ~view();
+    void switch_tab(void);
     void update_cpu_usage(double);
     void update_cpu_temperature(double);
     void update_ram(double);

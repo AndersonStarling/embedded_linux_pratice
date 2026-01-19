@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QSocketNotifier>
 
 class view;
 class model;
@@ -20,6 +21,8 @@ private:
     view * m_view;
     model *m_model;
     QTimer m_timer;
+    int fifo_fd;
+    QSocketNotifier * fifo_notifier;
 };
 
 #endif

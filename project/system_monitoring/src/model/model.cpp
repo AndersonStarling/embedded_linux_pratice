@@ -68,6 +68,7 @@ void model::sync_info(void)
 
     this->cpu_usage = cpu_obj.get_cpu_usage();
     this->cpu_temp  = cpu_obj.get_cpu_temp();
+    this->cpu_freq  = cpu_obj.get_cpu_freq();
 
     disk_obj.calculate_disk_speed();
     this->read_speed  = disk_obj.get_read_speed();
@@ -83,6 +84,11 @@ void model::sync_info(void)
     this->kernel_version = system_obj.get_kernel_version();
     this->load_average   = system_obj.get_load_average();
 
+}
+
+double model::get_cpu_freq(void)
+{
+    return this->cpu_freq;
 }
 
 float model::get_cpu_usage(void)

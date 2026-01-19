@@ -6,8 +6,9 @@
 #include <unistd.h>
 #include "cpu.h"
 
-#define CPU_USAGE_PATH "/proc/stat"
+#define CPU_USAGE_PATH       "/proc/stat"
 #define CPU_TEMPERATURE_PATH "/sys/class/thermal/thermal_zone0/temp"
+#define CPU_FREQ_PATH        "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
 #define BUFFER_SIZE 256u
 
 float cpu::get_cpu_usage(void)
@@ -143,4 +144,34 @@ float cpu::get_cpu_temp(void)
     close(fd);
 
     return ((float)temperature / 1000);
+}
+
+double cpu::get_cpu_freq(void)
+{
+    int fd;
+    ssize_t byte_read;
+    char buffer[BUFFER_SIZE] = {0};
+    uint64_t freq = 0;
+    int ret;
+
+    fd = open(CPU_FREQ_PATH, O_RDONLY);
+    if(fd < 0)
+    {
+        perror("open");
+        close(fd);
+        return -1;
+    }
+
+    byte_read = read(fd, &buffer[0], BUFFER_SIZE);
+
+    ret = sscanf(&buffer[0], "%" SCNu64, &freq);
+    if(ret < 1)
+    {
+        perror("sscanf");
+        return -1;
+    }
+
+    close(fd);
+
+    return ((double)freq / 1000000);
 }

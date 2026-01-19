@@ -10,6 +10,7 @@ class model
     private:
         float cpu_usage;
         float cpu_temp;
+        double cpu_freq;
         uint64_t read_speed;
         uint64_t write_speed;
         uint64_t mem_total;
@@ -31,6 +32,7 @@ class model
         void sync_info(void);
         float get_cpu_usage(void);
         float get_cpu_temp(void);
+        double get_cpu_freq(void);
         uint64_t get_read_speed(void);
         uint64_t get_write_speed(void);
         uint64_t get_mem_total(void);

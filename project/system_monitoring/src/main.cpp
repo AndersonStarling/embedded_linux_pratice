@@ -2,6 +2,7 @@
 #include "controller.h"
 #include "model.h"
 #include <QApplication>
+#include <QDebug>
 
 int main(int argc, char *argv[])
 {
@@ -9,6 +10,8 @@ int main(int argc, char *argv[])
     view w;
     model m;
     controller c(&w, &m);
+
+    qDebug() << "App started!";
 
     m.start_thread();
 
