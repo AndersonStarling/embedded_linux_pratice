@@ -2,6 +2,7 @@
 #include <string>
 #include <unistd.h>
 #include <inttypes.h>
+#include <ctime>
 #include "system.h"
 
 #define SYSTEM_UPTIME_PATH "/proc/uptime"
@@ -31,6 +32,18 @@ uint64_t system_info::get_up_time(void)
     fclose(fp);
 
     return up_time;
+}
+
+std::string system_info::get_date_time(void)
+{
+    time_t now = time(0);
+    std::string date_time;
+
+    tm *ltm = localtime(&now);
+
+    date_time = std::to_string(1900 + ltm->tm_year) + "-" + std::to_string(1 + ltm->tm_mon) + "-" + std::to_string(ltm->tm_mday);
+
+    return date_time;
 }
 
 std::string system_info::get_kernel_version(void)

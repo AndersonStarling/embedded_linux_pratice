@@ -53,7 +53,7 @@ view::view(QWidget *parent)
     update_ram_swap(0);
     update_ram_free(0);
     update_kernel_version("");
-    update_uptime("");
+    update_uptime(0);
     update_loadavg(0);
 
 }
@@ -126,9 +126,14 @@ void view::update_kernel_version(const QString &string_value)
     ui->kernel_version_label_value->setText(string_value);
 }
 
-void view::update_uptime(const QString &string_value)
+void view::update_uptime(double value)
 {
-    ui->uptime_label_value->setText(string_value);
+    ui->uptime_label_value->setText(QString::number(value, 'f', 1));
+}
+
+void view::update_uptime_label_bottom(const QString &string_value)
+{
+    ui->uptime_label_bottom->setText(string_value);
 }
 
 void view::update_loadavg(double value)

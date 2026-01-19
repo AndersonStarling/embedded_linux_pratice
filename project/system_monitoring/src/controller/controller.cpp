@@ -50,8 +50,10 @@ void controller::update_data(void)
     double ram_free = (double)m_model->get_mem_free() / (1024 * 1024);
     double ram_total = (double)m_model->get_mem_total() / (1024 * 1024);
     QString kernel_version =  QString::fromStdString(m_model->get_kernel_version());
-    QString uptime = QString::fromStdString("15:38:40");
+    double uptime = m_model->get_up_time();
+    QString uptime_label_bottom = QString::fromStdString("test");
     double load_avg = m_model->get_load_average();
+    QString date_time = QString::fromStdString(m_model->get_date_time());
 
     m_view->update_ram_total(ram_total);
     m_view->update_cpu_usage(cpu_usage);
@@ -65,6 +67,7 @@ void controller::update_data(void)
     m_view->update_ram_free(ram_free);
     m_view->update_kernel_version(kernel_version);
     m_view->update_uptime(uptime);
+    m_view->update_uptime_label_bottom(date_time);
     m_view->update_loadavg(load_avg);
 }
 

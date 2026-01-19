@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab_cpu">
     <property name="baseSize">
@@ -330,7 +330,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>8</pointsize>
+          <pointsize>11</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -364,9 +364,9 @@
     <widget class="QWidget" name="layoutWidget_6">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>10</x>
        <y>160</y>
-       <width>58</width>
+       <width>71</width>
        <height>91</height>
       </rect>
      </property>
@@ -785,11 +785,23 @@
     <widget class="QLabel" name="header_tab_label_6">
      <property name="geometry">
       <rect>
-       <x>80</x>
+       <x>70</x>
        <y>10</y>
        <width>90</width>
        <height>16</height>
       </rect>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>90</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>90</width>
+       <height>16</height>
+      </size>
      </property>
      <property name="font">
       <font>
@@ -823,7 +835,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Kernel ver:</string>
+         <string>Kernel:</string>
         </property>
        </widget>
       </item>
@@ -858,7 +870,7 @@
     <widget class="QWidget" name="layoutWidget_9">
      <property name="geometry">
       <rect>
-       <x>100</x>
+       <x>110</x>
        <y>60</y>
        <width>121</width>
        <height>87</height>
@@ -911,7 +923,7 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QLabel" name="uptime_label">
+  <widget class="QLabel" name="uptime_label_bottom">
    <property name="geometry">
     <rect>
      <x>40</x>
@@ -940,6 +952,9 @@
    </property>
    <property name="text">
     <string>Update time: 09:10:50</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
  </widget>

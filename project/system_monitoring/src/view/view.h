@@ -29,7 +29,8 @@ public:
     void update_ram_free(double);
     void update_ram_total(double);
     void update_kernel_version(const QString &t);
-    void update_uptime(const QString &string_value);
+    void update_uptime(double value);
+    void update_uptime_label_bottom(const QString &string_value);
     void update_loadavg(double);
 
 private:

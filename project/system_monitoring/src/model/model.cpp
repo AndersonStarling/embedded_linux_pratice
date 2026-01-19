@@ -81,6 +81,7 @@ void model::sync_info(void)
     this->swap_cached = mem_obj.get_swap_cahed();
 
     this->up_time        = system_obj.get_up_time();
+    this->date_time      = system_obj.get_date_time();
     this->kernel_version = system_obj.get_kernel_version();
     this->load_average   = system_obj.get_load_average();
 
@@ -139,6 +140,11 @@ uint64_t model::get_up_time(void)
 std::string model::get_kernel_version(void)
 {
     return this->kernel_version;
+}
+
+std::string model::get_date_time(void)
+{
+    return this->date_time;
 }
 
 float model::get_load_average(void)

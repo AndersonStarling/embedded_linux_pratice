@@ -19,6 +19,7 @@ class model
         uint64_t swap_cached; 
         uint64_t up_time;
         std::string kernel_version;
+        std::string date_time;
         float load_average;
         std::thread thread_of_model;
         std::mutex locker;
@@ -42,6 +43,7 @@ class model
         uint64_t get_up_time(void);
         std::string get_kernel_version(void);
         float get_load_average(void);
+        std::string get_date_time(void);
 };
 
 #endif /* MODEL_H */
