@@ -1,7 +1,9 @@
 #ifndef DISK
 #define DISK
 
-class disk
+#include "disk_common.h"
+
+class disk_info_linux : public disk_info
 {
     public:
         void calculate_disk_speed(void);

@@ -1,7 +1,9 @@
 #ifndef MEM_H
 #define MEM_H
 
-class mem
+#include "mem_common.h"
+
+class mem_info_linux : public mem_info
 {
     public:
         void calculate_mem_info(void);

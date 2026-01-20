@@ -1,7 +1,9 @@
 #ifndef CPU_H
 #define CPU_H
 
-class cpu
+#include "cpu_common.h"
+
+class cpu_info_linux : public cpu_info
 {
     public:
         float get_cpu_usage(void);

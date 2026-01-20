@@ -7,7 +7,7 @@
 #define DISK_SPEED_PATH "/proc/diskstats"
 #define BUFFER_SIZE 256u
 
-bool disk::valid_disk(char * buffer, uint16_t buffer_size)
+bool disk_info_linux::valid_disk(char * buffer, uint16_t buffer_size)
 {
     bool ret;
     std::string name;
@@ -22,17 +22,17 @@ bool disk::valid_disk(char * buffer, uint16_t buffer_size)
     return ret;
 }
 
-float disk::get_read_speed(void)
+float disk_info_linux::get_read_speed(void)
 {
     return this->read_speed;
 }
 
-float disk::get_write_speed(void)
+float disk_info_linux::get_write_speed(void)
 {
     return this->write_speed;
 }
 
-void disk::calculate_disk_speed(void)
+void disk_info_linux::calculate_disk_speed(void)
 {
     int ret;
     FILE *fp;

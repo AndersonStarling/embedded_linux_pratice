@@ -11,7 +11,7 @@
 #define CPU_FREQ_PATH        "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
 #define BUFFER_SIZE 256u
 
-float cpu::get_cpu_usage(void)
+float cpu_info_linux::get_cpu_usage(void)
 {
     int fd;
     char buffer[BUFFER_SIZE] = {0};
@@ -116,7 +116,7 @@ float cpu::get_cpu_usage(void)
     return cpu_usage;
 }
 
-float cpu::get_cpu_temp(void)
+float cpu_info_linux::get_cpu_temp(void)
 {
     int fd;
     ssize_t byte_read;
@@ -146,7 +146,7 @@ float cpu::get_cpu_temp(void)
     return ((float)temperature / 1000);
 }
 
-double cpu::get_cpu_freq(void)
+double cpu_info_linux::get_cpu_freq(void)
 {
     int fd;
     ssize_t byte_read;

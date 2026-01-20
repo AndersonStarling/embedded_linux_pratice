@@ -10,7 +10,7 @@
 #define SYSTEM_LOAD_AVERAGE_PATH "/proc/loadavg"
 #define BUFFER_SIZE 256u
 
-uint64_t system_info::get_up_time(void)
+uint64_t system_info_linux::get_up_time(void)
 {
     FILE *fp;
     char buffer[BUFFER_SIZE] = {0};
@@ -34,7 +34,7 @@ uint64_t system_info::get_up_time(void)
     return up_time;
 }
 
-std::string system_info::get_date_time(void)
+std::string system_info_linux::get_date_time(void)
 {
     time_t now = time(0);
     std::string date_time;
@@ -46,7 +46,7 @@ std::string system_info::get_date_time(void)
     return date_time;
 }
 
-std::string system_info::get_kernel_version(void)
+std::string system_info_linux::get_kernel_version(void)
 {
     FILE *fp;
     char buffer[BUFFER_SIZE] = {0};
@@ -72,7 +72,7 @@ std::string system_info::get_kernel_version(void)
     return ret;
 }
 
-float system_info::get_load_average(void)
+float system_info_linux::get_load_average(void)
 {
     FILE *fp;
     char buffer[BUFFER_SIZE] = {0};
