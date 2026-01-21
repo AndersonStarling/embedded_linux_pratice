@@ -7,26 +7,26 @@
 #define MEM_INFO_PATH "/proc/meminfo"
 #define BUFFER_SIZE 256u
 
-uint64_t mem::get_mem_total(void)
+uint64_t mem_info_linux::get_mem_total(void)
 {
     return this->mem_total;
 }
-uint64_t mem::get_mem_free(void)
+uint64_t mem_info_linux::get_mem_free(void)
 {
     return this->mem_free;
 }
 
-uint64_t mem::get_cached(void)
+uint64_t mem_info_linux::get_cached(void)
 {
     return this->cached;
 }
 
-uint64_t mem::get_swap_cahed(void)
+uint64_t mem_info_linux::get_swap_cahed(void)
 {
     return this->swap_cached;
 }
 
-void mem::calculate_mem_info(void)
+void mem_info_linux::calculate_mem_info(void)
 {
     uint64_t mem_total = 0;
     uint64_t mem_free = 0;

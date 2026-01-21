@@ -4,6 +4,10 @@
 #include <thread>
 #include <mutex>
 #include <atomic>
+#include "cpu.h"
+#include "disk.h"
+#include "mem.h"
+#include "system.h"
 
 class model
 {
@@ -25,8 +29,14 @@ class model
         std::mutex locker;
         std::atomic<bool> running = false;
         void thread_model(void);
+        cpu_info * cpu;
+        system_info * system;
+        disk_info * disk;
+        mem_info * mem;
+
+
     public:
-        model();
+        model(cpu_info * cpu, disk_info * disk, mem_info * mem, system_info * system);
         ~model();
         void start_thread(void);
         void stop_thread(void);

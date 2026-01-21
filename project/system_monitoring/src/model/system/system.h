@@ -1,7 +1,9 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
-class system_info
+#include "system_common.h"
+
+class system_info_linux : public system_info
 {
     public:
         uint64_t get_up_time(void);

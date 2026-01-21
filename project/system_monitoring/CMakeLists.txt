@@ -23,6 +23,8 @@ set(PROJECT_SOURCES
     src/controller/controller.h
     src/model/model.cpp
     src/model/model.h
+    src/model/factory.cpp
+    src/model/factory.h
     src/model/cpu/cpu.cpp
     src/model/cpu/cpu.h
     src/model/disk/disk.cpp
