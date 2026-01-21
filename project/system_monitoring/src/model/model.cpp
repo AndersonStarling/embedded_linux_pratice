@@ -8,11 +8,9 @@
 #include "system.h"
 #include "model.h"
 
-model::model()
+model::model(cpu_info * cpu, disk_info * disk, mem_info * mem, system_info * system) : cpu(cpu), disk(disk), mem(mem), system(system)
 {
-    this->cpu = new cpu_info_linux();
-    this->system = new system_info_linux();
-    this->disk = new disk_info_linux();
+
 }
 
 model::~model()

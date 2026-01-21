@@ -8,13 +8,17 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     view w;
-    model m;
-    controller c(&w, &m);
 
     qDebug() << "App started!";
 
-    m.start_thread();
+    cpu_info_linux * cpu   = new cpu_info_linux();
+    disk_info_linux * disk = new disk_info_linux();
+    mem_info_linux * mem = new mem_info_linux();
+    system_info_linux * system = new system_info_linux();
 
+    model m(cpu, disk, mem, system);
+    m.start_thread();
+    controller c(&w, &m);
     w.show();
 
     return a.exec();

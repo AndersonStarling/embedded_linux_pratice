@@ -36,7 +36,7 @@ class model
 
 
     public:
-        model();
+        model(cpu_info * cpu, disk_info * disk, mem_info * mem, system_info * system);
         ~model();
         void start_thread(void);
         void stop_thread(void);
