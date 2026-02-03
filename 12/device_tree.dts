@@ -1,0 +1,34 @@
+/dts-v1/;
+
+/ {
+
+
+    my_demo {
+        compatible = "test-123";
+
+        led_1 {
+            label = "led";
+            gpio-led;
+        };
+
+        led_2 {
+            label = "led";
+            gpio-led;
+        };
+    };
+
+    i2c {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        sensor@0 {
+            compatible = "sensor-1";
+            reg = <0>;
+        };
+
+        sensor@1 {
+            compatible = "sensor-2";
+            reg = <1>;
+        };
+    };
+};

@@ -1,0 +1,50 @@
+/dts-v1/;
+
+/ {
+
+    #address-cells = <1>;
+    #size-cells    = <1>;
+    gpio0: gpio@48310000 {
+        reg = <0x48310000 0x100>;
+        gpio-controller;
+        ngpios = <32>;
+        #gpio-cells = <2>;
+    };
+
+    led {
+        compatible = "led-custom";
+
+        led1 {
+            gpios = <&gpio0 21 0>;
+        };
+
+        led2 {
+            gpios = <&gpio0 22 0>;
+        };
+    };
+
+    button {
+        compatible = "button-custom";
+
+        button1 {
+            gpios = <&gpio0 14 0>;
+        };
+    };
+
+    i2c@4802A000 {
+        #address-cells = <1>;
+        #size-cells    = <0>;
+        reg = <0x4802A000 0x100>;
+
+        eeprom@50 {
+            compatible = "eeprom-1";
+
+            reg = <0x50>;
+        };
+    };
+
+};
+
+
+
+
