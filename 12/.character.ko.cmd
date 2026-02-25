@@ -1,0 +1,1 @@
+savedcmd_/home/ntai/embedded_linux_pratice/12/character.ko := arm-poky-linux-gnueabi-ld -r -EL -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T scripts/module.lds -o /home/ntai/embedded_linux_pratice/12/character.ko /home/ntai/embedded_linux_pratice/12/character.o /home/ntai/embedded_linux_pratice/12/character.mod.o /home/ntai/embedded_linux_pratice/12/.module-common.o

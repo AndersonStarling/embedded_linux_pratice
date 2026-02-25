@@ -1,0 +1,10 @@
+/output/*
+/*.txt
+/*.hello.*
+/*.ko
+/*.module*
+/*.Module*
+/*.o
+/*.mod*
+/*.symvers
+/*.order
